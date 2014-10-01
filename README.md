@@ -1,4 +1,4 @@
-Onegai-oyodosan
+Onegai-oyodosan (おねがい！大淀さん)
 ===============
 
 This is an automation tool about Kancolle.
