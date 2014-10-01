@@ -1,0 +1,452 @@
+
+<html>
+   <head>
+      <style type="text/css">
+         .sikuli-code {
+            font-size: 20px;
+            font-family: "Osaka-mono", Monospace;
+            line-height: 1.5em;
+            display:table-cell;
+            white-space: pre-wrap;       /* css-3 */
+            white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+            white-space: -pre-wrap;      /* Opera 4-6 */
+            white-space: -o-pre-wrap;    /* Opera 7 */
+            word-wrap: break-word;       /* Internet Explorer 5.5+ */
+            width: 99%;   /* remove horizontal scroll-bar when viewing in IE7 */
+         }
+         .sikuli-code img {
+            vertical-align: middle;
+            margin: 2px;
+            border: 1px solid #ccc;
+            padding: 2px;
+            -moz-border-radius: 5px;
+            -webkit-border-radius: 5px;
+            -moz-box-shadow: 1px 1px 1px gray;
+            -webkit-box-shadow: 1px 1px 2px gray;
+         }
+         .kw {
+            color: blue;
+         }
+         .skw {
+            color: rgb(63, 127, 127);
+         }
+
+         .str {
+            color: rgb(128, 0, 0);
+         }
+
+         .dig {
+            color: rgb(128, 64, 0);
+         }
+
+         .cmt {
+            color: rgb(200, 0, 200);
+         }
+
+         h2 {
+            display: inline;
+            font-weight: normal;
+         }
+
+         .info {
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+            margin-bottom: 20px;
+            display: none;
+         }
+
+         a {
+            color: #9D2900;
+         }
+
+         body {
+            font-family: "Trebuchet MS", Arial, Sans-Serif;
+         }
+
+      </style>
+   </head>
+<body>
+<div class="info">
+<h2>Documents.sikuli\Documents.sikuli</h2> <a href="Documents.sikuli\Documents.zip">(Download this script)</a>
+</div>
+<pre class="sikuli-code">
+WAIT_TIME_SECOND = <span class="dig">300</span>
+
+<span class="kw">def</span> safeFindAll(target):
+    <span class="kw">try</span>:
+        result = [x <span class="kw">for</span> x <span class="kw">in</span> findAll(target)]
+    <span class="kw">except</span> FindFailed:
+        result = []
+    <span class="kw">return</span> result
+
+<span class="kw">def</span> safeFind(target):
+    <span class="kw">try</span>:
+        result = [<span class="skw">find</span>(target)]
+    <span class="kw">except</span> FindFailed:
+        result = []
+    <span class="kw">return</span> result
+
+<span class="kw">def</span> command_click(img):
+    <span class="skw">wait</span>(img,<span class="dig">30</span>)
+    <span class="skw">click</span>(img)
+    reset_mouse()
+
+<span class="kw">def</span> command_click_if_exists(img):
+    <span class="kw">if</span> exists(img,<span class="dig">1</span>):
+        command_click(img)
+
+<span class="kw">def</span> reset_mouse():
+    <span class="cmt">#WINDOWS_START_IMG = "1387031226833.png"
+</span>    <span class="cmt">#hover(WINDOWS_START_IMG)
+</span>    hover(Location(<span class="dig">0</span>,<span class="dig">0</span>))
+
+<span class="kw">def</span> go_back_main_page():
+    MAIN_PAGE_IMG = <img src="1387033729897.png" />
+    command_click(MAIN_PAGE_IMG)
+<span class="kw">def</span> depot_command_set():
+    DEPOT_IMG = <img src="1387637113285.png" />; command_click(DEPOT_IMG)
+
+    TEAM_DEPOT_IMGS = [<img src="1387032194821.png" />, <img src="1387036182979.png" />, <img src="1388059801467.png" />]
+
+    <span class="kw">for</span> TEAM_DEPOT_IMG <span class="kw">in</span> TEAM_DEPOT_IMGS:
+        command_click(TEAM_DEPOT_IMG)
+        <span class="kw">if</span> exists(<img src="1411897468603.png" />):
+            <span class="kw">continue</span>
+        deployAction()
+
+    go_back_main_page()
+
+<span class="kw">def</span> mission_select(team_img, mission_img):
+    command_click(mission_img)
+    <span class="kw">if</span> exists(<img src="1387038600652.png" />):
+        <span class="kw">return</span>
+    command_click(<img src="1387031567759.png" />)
+    command_click(team_img)
+
+    <span class="kw">if</span> exists(<img src="1398785493829.png" />):
+        <span class="kw">return</span>
+    command_click( <img src="1387032878455.png" />)
+
+<span class="kw">def</span> mission_start_command_set():
+    GO_MISSION_IMG = Pattern(<img src="1387899218156.png" />).similar(<span class="dig">0.60</span>)  ;command_click(GO_MISSION_IMG)
+    FAR_FIGHT_IMG = <img src="1387031368107.png" />  ;command_click(FAR_FIGHT_IMG)
+    waitVanish(FAR_FIGHT_IMG)
+
+    set_mission_to_team(Pattern(<img src="1388846285376.png" />).similar(<span class="dig">0.85</span>), <img src="1387033402847.png" />, <span class="dig">6</span>)
+    set_mission_to_team(Pattern(<img src="1388846322199.png" />).similar(<span class="dig">0.85</span>), <img src="1387033166364.png" />, <span class="dig">5</span>)
+    set_mission_to_team(Pattern(<img src="1388846396919.png" />).similar(<span class="dig">0.85</span>), <img src="1388059885299.png" />, <span class="dig">21</span>)
+    go_back_main_page()
+
+
+<span class="kw">def</span> set_mission_to_team(missionStartingImg,teamImg,missionNum):
+    go_to_mission_page(missionNum)
+    <span class="kw">if</span> exists(missionStartingImg):
+        return_first_mission_page(missionNum)
+        <span class="kw">return</span>;
+
+    mission_select(teamImg, give_mission_img(missionNum) )
+    <span class="skw">sleep</span>(<span class="dig">3</span>)
+    return_first_mission_page(missionNum)
+    <span class="skw">wait</span>(<img src="1392385820341.png" />)
+
+
+<span class="kw">def</span> go_to_mission_page(missionNum):
+    <span class="kw">if</span> missionNum &gt;= <span class="dig">9</span> <span class="kw">and</span> missionNum &lt;= <span class="dig">16</span>:
+        command_click(<img src="1387209524972.png" />)
+    <span class="kw">if</span> missionNum &gt;= <span class="dig">17</span> <span class="kw">and</span> missionNum &lt;= <span class="dig">23</span>:
+        command_click(<img src="1398785973670.png" />)
+    <span class="kw">if</span> missionNum &gt;= <span class="dig">33</span> <span class="kw">and</span> missionNum &lt;= <span class="dig">39</span>:
+        command_click(<img src="1408874255262.png" />)
+
+<span class="kw">def</span> return_first_mission_page(missionNum):
+    <span class="kw">if</span> missionNum &gt;= <span class="dig">9</span>:
+        command_click(<img src="1392385763531.png" />)
+
+<span class="kw">def</span> give_mission_img(mission_num):
+    <span class="kw">if</span> mission_num == <span class="dig">2</span>:
+        <span class="kw">return</span> <img src="1397144479391.png" />
+    <span class="kw">if</span> mission_num == <span class="dig">3</span>:
+        <span class="kw">return</span> <img src="1387031464298.png" />
+    <span class="kw">if</span> mission_num == <span class="dig">5</span>:
+        <span class="kw">return</span> <img src="1387209175148.png" />
+    <span class="kw">if</span> mission_num == <span class="dig">6</span>:
+        <span class="kw">return</span> <img src="1387033032093.png" />
+    <span class="kw">if</span> mission_num == <span class="dig">9</span>:
+        <span class="kw">return</span> <img src="1387209560323.png" />
+    <span class="kw">if</span> mission_num == <span class="dig">13</span>:
+        <span class="kw">return</span> <img src="1396085248048.png" />
+    <span class="kw">if</span> mission_num == <span class="dig">21</span>:
+        <span class="kw">return</span> <img src="1398786009118.png" />
+    <span class="kw">if</span> mission_num == <span class="dig">36</span>:
+        <span class="kw">return</span> <img src="1408874168623.png" />
+
+<span class="kw">def</span> click_far_fight_report():
+    <span class="kw">print</span>(<span class="str">'check report'</span>)
+    BACK_FLAG_IMG = <img src="1387039183276.png" />
+    has_back_ship = False
+    <span class="kw">while</span>( True ):
+        <span class="kw">print</span>(<span class="str">'ready check report'</span>)
+        <span class="skw">wait</span>(Pattern(<img src="1388314294537.png" />).similar(<span class="dig">0.60</span>),<span class="dig">60</span>)
+
+        <span class="kw">if</span> <span class="kw">not</span> exists(BACK_FLAG_IMG):
+            <span class="kw">return</span> has_back_ship;
+        SOME_POSITION_IMG = BACK_FLAG_IMG
+        command_click(SOME_POSITION_IMG)
+        <span class="kw">print</span>(<span class="str">'click next'</span>)
+        NEXT_IMG = <img src="1387037875272.png" />
+        <span class="skw">wait</span>(NEXT_IMG, <span class="dig">20</span>);
+        command_click(NEXT_IMG)
+        command_click(NEXT_IMG)
+        has_back_ship = True
+
+<span class="cmt">######### BATH Related ###############################
+</span>
+
+<span class="kw">def</span> bathroom_command_set():
+    <span class="kw">print</span>(<span class="str">'bath room'</span>)
+    command_click(<img src="1387899191835.png" />)
+    <span class="skw">wait</span>(<img src="1387098209315.png" />,<span class="dig">20</span>)
+    <span class="kw">print</span>(<span class="str">'need_check_bathroom_next'</span>)
+    emptyBathroomNum = getEmptyBathroomNum()
+    <span class="kw">if</span> emptyBathroomNum == <span class="dig">0</span>:
+        go_back_main_page()
+        <span class="kw">return</span>
+
+    clickBathroom()
+    ships = getTeamOneShipList()
+    <span class="kw">if</span> emptyBathroomNum&gt;<span class="dig">1</span> <span class="kw">and</span> emptyBathroomNum&gt;len(ships):
+        ships += getOtherShip()
+
+    <span class="kw">for</span> ship <span class="kw">in</span> ships:
+        <span class="skw">click</span>(ship)
+        success = confirmShipToBathroom()
+        <span class="kw">if</span> <span class="kw">not</span> success:
+            <span class="kw">continue</span>
+        <span class="kw">if</span> <span class="kw">not</span> hasBathroom():
+            <span class="kw">break</span>
+        clickBathroom()
+
+    go_back_main_page()
+    <span class="cmt">#putShipsToBathroom(getTeamOneShipList)
+</span>    <span class="cmt">#putShipsToBathroom(getOtherShipList, True)
+</span>    <span class="cmt">#go_back_main_page()
+</span>
+<span class="kw">def</span> getEmptyBathroomNum():
+    <span class="kw">return</span> len(safeFindAll(Pattern(<img src="1391244821938.png" />).targetOffset(-<span class="dig">185</span>,<span class="dig">0</span>)))
+<span class="kw">def</span> hasBathroom():
+    <span class="kw">return</span> getEmptyBathroomNum() &gt; <span class="dig">0</span>
+
+<span class="kw">def</span> clickBathroom():
+    command_click(Pattern(<img src="1391244821938.png" />).targetOffset(-<span class="dig">185</span>,<span class="dig">0</span>))
+
+<span class="kw">def</span> getTeamOneShipList():
+    ships = safeFind(Pattern(<img src="1389513591381.png" />).similar(<span class="dig">0.85</span>)) + safeFindAll(Pattern(<img src="1389513609792.png" />).similar(<span class="dig">0.85</span>))
+    <span class="kw">return</span> filter(isNotRepairing, ships)
+
+<span class="kw">def</span> getOtherShip():
+    otherShips = []
+    base_location = <span class="skw">find</span>(Pattern(<img src="1411742433993.png" />).targetOffset(-<span class="dig">40</span>,<span class="dig">0</span>)).getTarget().below(<span class="dig">20</span>)
+    OFFSET_Y = <span class="dig">30</span>
+    <span class="kw">for</span> i <span class="kw">in</span> xrange(<span class="dig">0</span>,<span class="dig">3</span>):
+        target = Region(base_location.getX()-<span class="dig">200</span>, base_location.getY()+OFFSET_Y*i-<span class="dig">10</span>, <span class="dig">500</span>, <span class="dig">40</span>)
+        <span class="kw">if</span> <span class="kw">not</span> target.exists(Pattern(<img src="1389513609792.png" />).similar(<span class="dig">0.85</span>)) <span class="kw">and</span> <span class="kw">not</span> target.exists(Pattern(<img src="1389513591381.png" />).similar(<span class="dig">0.85</span>)) <span class="kw">and</span> <span class="kw">not</span> target.exists(<img src="1391245338826.png" />):
+            otherShips.append(target.getCenter()) <span class="cmt">#add other ship location</span>
+            <span class="kw">break</span>
+
+    <span class="kw">return</span> otherShips
+
+<span class="kw">def</span> returnShipList():
+    <span class="skw">find</span>(<img src="1411817491322.png" />).right(<span class="dig">50</span>).<span class="skw">click</span>()
+
+<span class="kw">def</span> confirmShipToBathroom():
+    command_click(<img src="1387805544369.png" />)
+    <span class="kw">if</span> <span class="kw">not</span> exists(<img src="1387806196232.png" />):
+        returnShipList()
+        <span class="kw">return</span> False
+
+    command_click(<img src="1387806196232.png" />)
+    waitVanish(<img src="1387806196232.png" />)
+    <span class="kw">return</span> True
+
+<span class="kw">def</span> isNotRepairing(ship):
+    <span class="kw">return</span> <span class="kw">not</span> ship.right().exists(<img src="1391245338826.png" />)
+
+<span class="kw">def</span> changePage():
+    command_click(Pattern(<img src="1387806921137.png" />).similar(<span class="dig">0.60</span>))
+    go_back_main_page()
+
+<span class="kw">def</span> setQuest():
+    <span class="kw">print</span>(<span class="str">"set quest"</span>)
+    command_click(<img src="1388155958539.png" />)
+    command_click(<img src="1388156008876.png" />)
+
+    <span class="kw">while</span> True:
+        <span class="kw">while</span> exists(<img src="1388489674990.png" />):
+            command_click(<img src="1388489674990.png" />)
+
+            <span class="kw">while</span> exists(<img src="1388489870661.png" />):
+                command_click(<img src="1388489870661.png" />)
+
+        <span class="skw">sleep</span>(<span class="dig">2</span>)
+        clickQuest(Pattern(<img src="1395100897154.png" />).similar(<span class="dig">0.85</span>))
+        clickQuest(Pattern(<img src="1395054972516.png" />).similar(<span class="dig">0.85</span>))
+        clickQuest(<img src="1389624013080.png" />)
+        clickQuest(Pattern(<img src="1390781513309.png" />).similar(<span class="dig">0.95</span>))
+        clickQuest(Pattern(<img src="1390710610032.png" />).similar(<span class="dig">0.95</span>))
+        clickQuest(Pattern(<img src="1390726151408.png" />).similar(<span class="dig">0.95</span>))
+
+        <span class="kw">if</span> <span class="kw">not</span> exists(<img src="1388156384056.png" />):
+            <span class="kw">break</span>
+
+        command_click(<img src="1388156384056.png" />)
+
+    command_click(<img src="1388157044386.png" />)
+<span class="kw">def</span> clickQuest(img):
+    <span class="kw">if</span> exists(img,<span class="dig">1</span>) <span class="kw">and</span> <span class="kw">not</span> <span class="skw">find</span>(img).right().exists(<img src="1398338331456.png" />):
+        command_click(img)
+
+<span class="kw">def</span> readReport(is_go_night_fight= False):
+
+    <span class="kw">print</span>(<span class="str">"read fight report"</span>)
+    <span class="kw">while</span> <span class="kw">not</span> exists(<img src="1404742801749.png" />) <span class="kw">and</span> <span class="kw">not</span> exists(<img src="1389422324464.png" />):
+        <span class="skw">sleep</span>(<span class="dig">5</span>)
+
+    <span class="kw">if</span> <span class="kw">not</span> is_go_night_fight:
+        command_click_if_exists(Pattern(<img src="1404742801749.png" />).targetOffset(-<span class="dig">100</span>,<span class="dig">0</span>))
+    <span class="kw">else</span>:
+        command_click_if_exists(Pattern(<img src="1404742801749.png" />).targetOffset(<span class="dig">105</span>,-<span class="dig">9</span>))
+
+<span class="kw">def</span> sendBackCommand(is_night_fight = False):
+    <span class="kw">while</span> <span class="kw">not</span> exists(Pattern(<img src="1389505758652.png" />).targetOffset(<span class="dig">102</span>,-<span class="dig">12</span>),<span class="dig">1</span>):
+        <span class="skw">click</span>(Location(<span class="dig">700</span>,<span class="dig">200</span>))
+
+    command_click(Pattern(<img src="1389505758652.png" />).targetOffset(<span class="dig">102</span>,-<span class="dig">12</span>))
+
+<span class="kw">def</span> checkTeamStatus():
+    <span class="kw">print</span>(<span class="str">'check Team Status'</span>)
+    command_click(<img src="1389872443599.png" />)
+
+    <span class="cmt"># Check Tired
+</span>    command_click(<img src="1411745005884.png" />)
+    command_click(Pattern(<img src="1411745029811.png" />).targetOffset(<span class="dig">22</span>,-<span class="dig">10</span>))
+    is_need_rest = exists(<img src="1411745124736.png" />)
+    command_click_if_exists(Pattern(<img src="1411745124736.png" />).targetOffset(<span class="dig">14</span>,<span class="dig">87</span>))
+    command_click_if_exists(Pattern(<img src="1411746862467.png" />).targetOffset(<span class="dig">241</span>,<span class="dig">37</span>))
+
+    <span class="kw">if</span> is_need_rest:
+        go_back_main_page()
+        <span class="kw">return</span> False
+
+    <span class="cmt"># Check Damega
+</span>    DMAMGE_IMGS = [<img src="1389428953255.png" />,<img src="1389433772472.png" />,<img src="1389426348272.png" />,<img src="1404619465303.png" />]
+    <span class="kw">for</span> damage_img <span class="kw">in</span> DMAMGE_IMGS:
+        <span class="kw">if</span> exists(damage_img):
+            can_fight = False
+            go_back_main_page()
+            <span class="kw">return</span> False
+
+    command_click(<img src="1389872472167.png" />)
+
+    deployAction()
+    go_back_main_page()
+    <span class="kw">return</span> True
+
+<span class="kw">def</span> goLevelUp():
+    <span class="kw">print</span>(<span class="str">'go level up'</span>)
+    command_click(Pattern(<img src="1389366639971.png" />).similar(<span class="dig">0.60</span>))
+    command_click(<img src="1389366660837.png" />)
+    command_click(Pattern(<img src="1401557578765.png" />).targetOffset(<span class="dig">4</span>,<span class="dig">5</span>))
+    command_click(Pattern(<img src="1410532310092.png" />).targetOffset(<span class="dig">150</span>,-<span class="dig">70</span>))
+    command_click(<img src="1389366757273.png" />)
+    command_click(<img src="1389366916659.png" />)
+    <span class="skw">wait</span>(<img src="1389366980271.png" />,<span class="dig">600</span>)
+    command_click(<img src="1389366995206.png" />)
+    <span class="skw">wait</span>(<img src="1392291228091.png" />,<span class="dig">600</span>)
+    command_click(Pattern(<img src="1392291228091.png" />).targetOffset(-<span class="dig">143</span>,-<span class="dig">32</span>))
+    readReport()
+    sendBackCommand()
+
+<span class="kw">def</span> deployAction():
+    location = <span class="skw">find</span>(Pattern(<img src="1411739357686.png" />).targetOffset(-<span class="dig">71</span>,<span class="dig">2</span>)).getTarget()
+    OFFSET_Y = <span class="dig">50</span>
+    <span class="kw">for</span> i <span class="kw">in</span> xrange(<span class="dig">1</span>,<span class="dig">7</span>):
+        <span class="skw">click</span>(location.below(OFFSET_Y*i)) <span class="cmt">#click all supply checkbox</span>
+    command_click(<img src="1387032349938.png" />)
+    <span class="skw">sleep</span>(<span class="dig">3</span>)
+
+<span class="kw">def</span> deployAndFarFight():
+    is_back = True
+    <span class="kw">while</span> is_back:
+        depot_command_set()
+        is_back = click_far_fight_report()
+
+    mission_start_command_set()
+    <span class="kw">return</span> click_far_fight_report()
+
+
+<span class="kw">def</span> mainloop(attack_func):
+    count = <span class="dig">0</span>
+    <span class="kw">while</span>(True):
+        <span class="kw">print</span>(count)
+        switchApp(<span class="str">"Chrome"</span>)
+
+        <span class="cmt"># Level UP
+</span>        is_back = click_far_fight_report()
+        can_figit = checkTeamStatus()
+        is_back = click_far_fight_report()
+        <span class="kw">if</span> can_figit:
+            attack_func()
+        <span class="cmt"># Get Resource
+</span>        is_back = click_far_fight_report()
+        bathroom_command_set()
+        <span class="kw">if</span> count %<span class="dig">5</span> == <span class="dig">0</span>:
+            click_far_fight_report()
+            setQuest()
+
+        click_far_fight_report()
+        is_back = True
+        <span class="kw">while</span> is_back:
+            is_back = deployAndFarFight()
+
+        <span class="cmt">#click_far_fight_report()
+</span>        reset_mouse()
+
+        <span class="skw">sleep</span>(WAIT_TIME_SECOND)
+        count += <span class="dig">1</span>
+
+<span class="kw">def</span> mainloopWithException(attack_func):
+    <span class="kw">try</span>:
+        mainloop(attack_func)
+    <span class="kw">except</span> FindFailed :
+        <span class="kw">print</span>(<span class="str">"find failed"</span>)
+        command_click_if_exists(<img src="1391006648039.png" />)
+        command_click_if_exists(<img src="1391006551340.png" />)
+
+        <span class="kw">if</span> exists(<img src="1398499004685.png" />):
+            mainloopWithException(attack_func)
+
+        restartKancolle(attack_func)
+
+<span class="kw">def</span> restartKancolle(attack_func):
+    <span class="kw">print</span>(<span class="str">"reload"</span>)
+    command_click(<img src="1389708507966.png" />)
+    wait_count = <span class="dig">0</span>
+    <span class="kw">while</span> <span class="kw">not</span> exists(<img src="1392529970420.png" />) <span class="kw">or</span> wait_count &lt;= <span class="dig">12</span>:
+        <span class="kw">if</span> exists(<img src="1389709135482.png" />):
+            command_click(Pattern(<img src="1389708826061.png" />).targetOffset(<span class="dig">209</span>,<span class="dig">156</span>))
+        <span class="kw">if</span> exists(Pattern(<img src="1389709266032.png" />).similar(<span class="dig">0.60</span>)):
+            mainloopWithException(attack_func)
+
+        wait_count += <span class="dig">1</span>
+        <span class="skw">sleep</span>(<span class="dig">10</span>)
+
+    <span class="kw">print</span>(<span class="str">"be neko"</span>)
+    restartKancolle()
+
+attack_func = goLevelUp
+
+<span class="cmt">#goAttackMap(True)
+</span>mainloopWithException(attack_func)
+</pre>
+</body>
+</html>
