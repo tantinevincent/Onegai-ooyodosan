@@ -1,5 +1,11 @@
 WAIT_TIME_SECOND = 300
 
+def logged(f):
+    def wrapped():
+        print f.__name__ + " start"
+        return f()
+    return wrapped 
+
 def safeFindAll(target):
     try:
         result = [x for x in findAll(target)]
@@ -22,15 +28,15 @@ def command_click(img):
 def command_click_if_exists(img):
     if exists(img,1):
         command_click(img)
-
+        
 def reset_mouse():
-    #WINDOWS_START_IMG = "1387031226833.png"
-    #hover(WINDOWS_START_IMG)
     hover(Location(0,0))
-
+    
 def go_back_main_page():
     MAIN_PAGE_IMG = "1387033729897.png"
     command_click(MAIN_PAGE_IMG)
+    
+@logged
 def depot_command_set():
     DEPOT_IMG = "1387637113285.png"; command_click(DEPOT_IMG)
     
@@ -54,7 +60,7 @@ def mission_select(team_img, mission_img):
     if exists("1398785493829.png"):
         return
     command_click( "1387032878455.png")
-
+@logged
 def mission_start_command_set():
     GO_MISSION_IMG = Pattern("1387899218156.png").similar(0.60)  ;command_click(GO_MISSION_IMG)
     FAR_FIGHT_IMG = "1387031368107.png"  ;command_click(FAR_FIGHT_IMG)
@@ -64,7 +70,6 @@ def mission_start_command_set():
     set_mission_to_team(Pattern("1388846322199.png").similar(0.85), "1387033166364.png", 5)
     set_mission_to_team(Pattern("1388846396919.png").similar(0.85), "1388059885299.png", 21)
     go_back_main_page()
-
 
 def set_mission_to_team(missionStartingImg,teamImg,missionNum):
     go_to_mission_page(missionNum)
@@ -76,8 +81,7 @@ def set_mission_to_team(missionStartingImg,teamImg,missionNum):
     sleep(3)
     return_first_mission_page(missionNum)
     wait("1392385820341.png")
-    
-    
+     
 def go_to_mission_page(missionNum):
     if missionNum >= 9 and missionNum <= 16:
         command_click("1387209524972.png")
@@ -85,11 +89,11 @@ def go_to_mission_page(missionNum):
         command_click("1398785973670.png")
     if missionNum >= 33 and missionNum <= 39:
         command_click("1408874255262.png")
-
+        
 def return_first_mission_page(missionNum):
     if missionNum >= 9:
         command_click("1392385763531.png")
-        
+       
 def give_mission_img(mission_num):
     if mission_num == 2:
         return "1397144479391.png"
@@ -107,7 +111,8 @@ def give_mission_img(mission_num):
         return "1398786009118.png"
     if mission_num == 36:
         return "1408874168623.png"
-    
+
+@logged
 def click_far_fight_report():
     print('check report')
     BACK_FLAG_IMG = "1387039183276.png"
@@ -128,10 +133,8 @@ def click_far_fight_report():
         has_back_ship = True
 
 ######### BATH Related ###############################
-
-
+@logged
 def bathroom_command_set():
-    print('bath room')
     command_click("1387899191835.png")
     wait("1387098209315.png",20)
     print('need_check_bathroom_next')
@@ -166,7 +169,7 @@ def hasBathroom():
 
 def clickBathroom():
     command_click(Pattern("1391244821938.png").targetOffset(-185,0))
-
+    
 def getTeamOneShipList():
     ships = safeFind(Pattern("1389513591381.png").similar(0.85)) + safeFindAll(Pattern("1389513609792.png").similar(0.85))
     return filter(isNotRepairing, ships)
@@ -203,8 +206,8 @@ def changePage():
     command_click(Pattern("1387806921137.png").similar(0.60))
     go_back_main_page()
 
+@logged
 def setQuest():
-    print("set quest")
     command_click("1388155958539.png")
     command_click("1388156008876.png")
     
@@ -229,13 +232,12 @@ def setQuest():
         command_click("1388156384056.png")
         
     command_click("1388157044386.png")
+
 def clickQuest(img):
     if exists(img,1) and not find(img).right().exists("1398338331456.png"):
         command_click(img)
 
 def readReport(is_go_night_fight= False):  
-    
-    print("read fight report")
     while not exists("1404742801749.png") and not exists("1389422324464.png"):
         sleep(5)
 
@@ -249,9 +251,8 @@ def sendBackCommand(is_night_fight = False):
         click(Location(700,200))
         
     command_click(Pattern("1389505758652.png").targetOffset(102,-12))
-
+@logged
 def checkTeamStatus():    
-    print('check Team Status')
     command_click("1389872443599.png")
 
     # Check Tired
@@ -279,8 +280,8 @@ def checkTeamStatus():
     go_back_main_page()
     return True
 
+@logged
 def goLevelUp():
-    print('go level up')
     command_click(Pattern("1389366639971.png").similar(0.60))
     command_click("1389366660837.png")
     command_click(Pattern("1401557578765.png").targetOffset(4,5))
@@ -294,6 +295,7 @@ def goLevelUp():
     readReport()
     sendBackCommand()
 
+@logged
 def deployAction():
     location = find(Pattern("1411739357686.png").targetOffset(-71,2)).getTarget()
     OFFSET_Y = 50
@@ -302,6 +304,7 @@ def deployAction():
     command_click("1387032349938.png")
     sleep(3)
 
+@logged
 def deployAndFarFight():
     is_back = True
     while is_back:
@@ -311,7 +314,6 @@ def deployAndFarFight():
     mission_start_command_set()
     return click_far_fight_report()
 
-    
 def mainloop(attack_func):
     count = 0
     while(True):
@@ -354,9 +356,9 @@ def mainloopWithException(attack_func):
             mainloopWithException(attack_func)
 
         restartKancolle(attack_func)
-
+        
+@logged
 def restartKancolle(attack_func):
-    print("reload")
     command_click("1389708507966.png")
     wait_count = 0
     while not exists("1392529970420.png") or wait_count <= 12:
