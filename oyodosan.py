@@ -66,7 +66,7 @@ def mission_start_command_set():
     FAR_FIGHT_IMG = "1387031368107.png"  ;command_click(FAR_FIGHT_IMG)
     waitVanish(FAR_FIGHT_IMG)
 
-    set_mission_to_team(Pattern("1388846285376.png").similar(0.85), "1387033402847.png", 6)
+    set_mission_to_team(Pattern("1388846285376.png").similar(0.85), "1387033402847.png", 38)
     set_mission_to_team(Pattern("1388846322199.png").similar(0.85), "1387033166364.png", 5)
     set_mission_to_team(Pattern("1388846396919.png").similar(0.85), "1388059885299.png", 21)
     go_back_main_page()
@@ -110,7 +110,9 @@ def give_mission_img(mission_num):
     if mission_num == 21:
         return "1398786009118.png"
     if mission_num == 36:
-        return "1408874168623.png"
+        return "1414315920215.png"
+    if mission_num == 38:
+        return "1414315905380.png"
 
 @logged
 def click_far_fight_report():
@@ -225,6 +227,7 @@ def setQuest():
         clickQuest(Pattern("1390781513309.png").similar(0.95))
         clickQuest(Pattern("1390710610032.png").similar(0.95))
         clickQuest(Pattern("1390726151408.png").similar(0.95))
+        clickQuest(Pattern("1414316070741.png").similar(0.90))
         
         if not exists("1388156384056.png"):
             break
@@ -314,7 +317,7 @@ def deployAndFarFight():
     mission_start_command_set()
     return click_far_fight_report()
 
-def mainloop(attack_func):
+def mainloop():
     count = 0
     while(True):
         print(count)
@@ -325,7 +328,7 @@ def mainloop(attack_func):
         can_figit = checkTeamStatus()    
         is_back = click_far_fight_report()
         if can_figit:
-            attack_func()
+            goLevelUp()
         # Get Resource
         is_back = click_far_fight_report()
         bathroom_command_set()
@@ -344,28 +347,28 @@ def mainloop(attack_func):
         sleep(WAIT_TIME_SECOND)
         count += 1
 
-def mainloopWithException(attack_func):
+def mainloopWithException():
     try:
-        mainloop(attack_func)
+        mainloop()
     except FindFailed :
         print("find failed")
         command_click_if_exists("1391006648039.png")
         command_click_if_exists("1391006551340.png")
         
         if exists("1398499004685.png"):
-            mainloopWithException(attack_func)
+            mainloopWithException()
 
-        restartKancolle(attack_func)
+        restartKancolle()
         
 @logged
-def restartKancolle(attack_func):
+def restartKancolle():
     command_click("1389708507966.png")
     wait_count = 0
     while not exists("1392529970420.png") or wait_count <= 12:
         if exists("1389709135482.png"):
             command_click(Pattern("1389708826061.png").targetOffset(209,156))
         if exists(Pattern("1389709266032.png").similar(0.60)):
-            mainloopWithException(attack_func)
+            mainloopWithException()
 
         wait_count += 1
         sleep(10)
@@ -373,7 +376,5 @@ def restartKancolle(attack_func):
     print("be neko")
     restartKancolle()
 
-attack_func = goLevelUp
-    
 #goAttackMap(True)
-mainloopWithException(attack_func)
+mainloopWithException()
