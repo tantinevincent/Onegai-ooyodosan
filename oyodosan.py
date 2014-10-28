@@ -33,8 +33,7 @@ def reset_mouse():
     hover(Location(0,0))
     
 def go_back_main_page():
-    MAIN_PAGE_IMG = "1387033729897.png"
-    command_click(MAIN_PAGE_IMG)
+    command_click("1387033729897.png")
     
 @logged
 def depot_command_set():
@@ -352,7 +351,7 @@ def mainloopWithException():
         mainloop()
     except FindFailed :
         print("find failed")
-        command_click_if_exists("1391006648039.png")
+        command_click_if_exists("1387033729897.png")
         command_click_if_exists("1391006551340.png")
         
         if exists("1398499004685.png"):
