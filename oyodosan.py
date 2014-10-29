@@ -321,31 +321,32 @@ def mainloop():
     while(True):
         print(count)
         switchApp("Chrome")
-        
-        # Level UP
-        is_back = click_far_fight_report()   
-        can_figit = checkTeamStatus()    
-        is_back = click_far_fight_report()
-        if can_figit:
-            goLevelUp()
-        # Get Resource
-        is_back = click_far_fight_report()
-        bathroom_command_set()
-        if count %5 == 0:    
-            click_far_fight_report()
-            setQuest()
-            
-        click_far_fight_report()
-        is_back = True
-        while is_back:
-            is_back = deployAndFarFight()
-       
-        #click_far_fight_report()
-        reset_mouse()
-        
+        doAllJob(count)
         sleep(WAIT_TIME_SECOND)
         count += 1
 
+def doAllJob(count):
+    # Level UP
+    is_back = click_far_fight_report()   
+    can_figit = checkTeamStatus()    
+    is_back = click_far_fight_report()
+    if can_figit:
+        goLevelUp()
+    # Get Resource
+    is_back = click_far_fight_report()
+    bathroom_command_set()
+    if count %5 == 0:    
+        click_far_fight_report()
+        setQuest()
+            
+    click_far_fight_report()
+    is_back = True
+    while is_back:
+        is_back = deployAndFarFight()
+          
+    #click_far_fight_report()
+    reset_mouse()
+    
 def mainloopWithException():
     try:
         mainloop()
