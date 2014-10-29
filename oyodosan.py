@@ -348,33 +348,38 @@ def doAllJob(count):
     reset_mouse()
     
 def mainloopWithException():
-    try:
-        mainloop()
-    except FindFailed :
-        print("find failed")
-        command_click_if_exists("1387033729897.png")
-        command_click_if_exists("1391006551340.png")
-        
-        if exists("1398499004685.png"):
-            mainloopWithException()
+    count = 0
+    while(True):
+        try:
+            print(count)
+            switchApp("Chrome")
+            doAllJob(count)
+            sleep(WAIT_TIME_SECOND)
+            count += 1
+        except FindFailed :
+            print("find failed")
+            returnToBase()
 
-        restartKancolle()
-        
+@logged
+def returnToBase():
+    command_click_if_exists("1387033729897.png")
+    command_click_if_exists("1391006551340.png")
+    sleep(3)
+    if exists("1398499004685.png"):
+        return
+    
+    # Can not back to base, restart kancolle
+    restartKancolle()
+
 @logged
 def restartKancolle():
-    command_click("1389708507966.png")
-    wait_count = 0
-    while not exists("1392529970420.png") or wait_count <= 12:
-        if exists("1389709135482.png"):
-            command_click(Pattern("1389708826061.png").targetOffset(209,156))
-        if exists(Pattern("1389709266032.png").similar(0.60)):
-            mainloopWithException()
-
-        wait_count += 1
+    isOnWelcomePage = False
+    while not isOnWelcomePage:
+        command_click("1389708507966.png")
         sleep(10)
-        
-    print("be neko")
-    restartKancolle()
+        isOnWelcomePage = exists("1389709135482.png")
+    command_click(Pattern("1389708826061.png").targetOffset(209,156))
+    sleep(10)
 
 #goAttackMap(True)
 mainloopWithException()
