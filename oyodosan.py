@@ -316,15 +316,6 @@ def deployAndFarFight():
     mission_start_command_set()
     return click_far_fight_report()
 
-def mainloop():
-    count = 0
-    while(True):
-        print(count)
-        switchApp("Chrome")
-        doAllJob(count)
-        sleep(WAIT_TIME_SECOND)
-        count += 1
-
 def doAllJob(count):
     # Level UP
     is_back = click_far_fight_report()   
