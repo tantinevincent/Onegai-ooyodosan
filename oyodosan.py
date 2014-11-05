@@ -65,7 +65,7 @@ def mission_start_command_set():
     FAR_FIGHT_IMG = "1387031368107.png"  ;command_click(FAR_FIGHT_IMG)
     waitVanish(FAR_FIGHT_IMG)
 
-    set_mission_to_team(Pattern("1388846285376.png").similar(0.85), "1387033402847.png", 38)
+    set_mission_to_team(Pattern("1388846285376.png").similar(0.85), "1387033402847.png", 37)
     set_mission_to_team(Pattern("1388846322199.png").similar(0.85), "1387033166364.png", 5)
     set_mission_to_team(Pattern("1388846396919.png").similar(0.85), "1388059885299.png", 21)
     go_back_main_page()
@@ -110,6 +110,8 @@ def give_mission_img(mission_num):
         return "1398786009118.png"
     if mission_num == 36:
         return "1414315920215.png"
+    if mission_num == 37:
+        return "1414945655959.png"
     if mission_num == 38:
         return "1414315905380.png"
 
@@ -226,6 +228,7 @@ def setQuest():
         clickQuest(Pattern("1390781513309.png").similar(0.95))
         clickQuest(Pattern("1390710610032.png").similar(0.95))
         clickQuest(Pattern("1390726151408.png").similar(0.95))
+        clickQuest(Pattern("1414973590474.png").similar(0.90))
         clickQuest(Pattern("1414316070741.png").similar(0.90))
         
         if not exists("1388156384056.png"):
