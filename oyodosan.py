@@ -1,4 +1,5 @@
 WAIT_TIME_SECOND = 300
+BATHROOM_NUM = 2
 
 def logged(f):
     def wrapped():
@@ -148,8 +149,10 @@ def bathroom_command_set():
     
     clickBathroom()
     ships = getTeamOneShipList()
-    if emptyBathroomNum>1 and emptyBathroomNum>len(ships):
-        ships += getOtherShip()
+    
+    if emptyBathroomNum > 1:
+        otherShip = getOtherShip()
+        ships += [otherShip] if otherShip is not None else []
         
     for ship in ships:
         click(ship)
@@ -166,7 +169,7 @@ def bathroom_command_set():
     #go_back_main_page()
 
 def getEmptyBathroomNum():
-    return len(safeFindAll(Pattern("1391244821938.png").targetOffset(-185,0)))
+    return BATHROOM_NUM - len(safeFindAll("1415436564714.png"))
 def hasBathroom():
     return getEmptyBathroomNum() > 0
 
@@ -178,16 +181,12 @@ def getTeamOneShipList():
     return filter(isNotRepairing, ships)
 
 def getOtherShip():
-    otherShips = []
     base_location = find(Pattern("1411742433993.png").targetOffset(-40,0)).getTarget().below(20)
     OFFSET_Y = 30
     for i in xrange(0,3):
         target = Region(base_location.getX()-200, base_location.getY()+OFFSET_Y*i-10, 500, 40)
         if not target.exists(Pattern("1389513609792.png").similar(0.85)) and not target.exists(Pattern("1389513591381.png").similar(0.85)) and not target.exists("1391245338826.png"):
-            otherShips.append(target.getCenter()) #add other ship location
-            break
-    
-    return otherShips
+            return target.getCenter()
 
 def returnShipList():
     find("1411817491322.png").right(50).click()
@@ -375,5 +374,6 @@ def restartKancolle():
     command_click(Pattern("1389708826061.png").targetOffset(209,156))
     sleep(10)
 
-#goAttackMap(True)
-mainloopWithException()
+
+if __name__ == "__main__":
+    mainloopWithException()
