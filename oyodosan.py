@@ -66,9 +66,9 @@ def mission_start_command_set():
     FAR_FIGHT_IMG = "1387031368107.png"  ;command_click(FAR_FIGHT_IMG)
     waitVanish(FAR_FIGHT_IMG)
 
-    set_mission_to_team(Pattern("1388846285376.png").similar(0.85), "1387033402847.png", 37)
-    set_mission_to_team(Pattern("1388846322199.png").similar(0.85), "1387033166364.png", 5)
-    set_mission_to_team(Pattern("1388846396919.png").similar(0.85), "1388059885299.png", 21)
+    set_mission_to_team(Pattern("1388846285376.png").similar(0.85), "1387033402847.png", 5)
+    set_mission_to_team(Pattern("1388846322199.png").similar(0.85), "1387033166364.png", 37)
+    set_mission_to_team(Pattern("1388846396919.png").similar(0.85), "1388059885299.png", 11)
     go_back_main_page()
 
 def set_mission_to_team(missionStartingImg,teamImg,missionNum):
@@ -105,6 +105,8 @@ def give_mission_img(mission_num):
         return "1387033032093.png"
     if mission_num == 9:
         return "1387209560323.png"
+    if mission_num == 11:
+        return "1416136085338.png"
     if mission_num == 13:
         return "1396085248048.png"
     if mission_num == 21:
@@ -117,7 +119,7 @@ def give_mission_img(mission_num):
         return "1414315905380.png"
 
 @logged
-def click_far_fight_report():
+def click_expedition_report():
     print('check report')
     BACK_FLAG_IMG = "1387039183276.png"
     has_back_ship = False
@@ -309,35 +311,35 @@ def deployAction():
     sleep(3)
 
 @logged
-def deployAndFarFight():
+def deployAndExpedition():
     is_back = True
     while is_back:
         depot_command_set()
-        is_back = click_far_fight_report()
+        is_back = click_expedition_report()
         
     mission_start_command_set()
-    return click_far_fight_report()
+    return click_expedition_report()
 
 def doAllJob(count):
     # Level UP
-    is_back = click_far_fight_report()   
+    is_back = click_expedition_report()   
     can_figit = checkTeamStatus()    
-    is_back = click_far_fight_report()
+    is_back = click_expedition_report()
     if can_figit:
         goLevelUp()
     # Get Resource
-    is_back = click_far_fight_report()
+    is_back = click_expedition_report()
     bathroom_command_set()
     if count %5 == 0:    
-        click_far_fight_report()
+        click_expedition_report()
         setQuest()
             
-    click_far_fight_report()
+    click_expedition_report()
     is_back = True
     while is_back:
-        is_back = deployAndFarFight()
+        is_back = deployAndExpedition()
           
-    #click_far_fight_report()
+    #click_expedition_report()
     reset_mouse()
     
 def mainloopWithException():
