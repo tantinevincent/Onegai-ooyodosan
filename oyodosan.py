@@ -1,3 +1,4 @@
+KANCOLLE_BROWSER = "Chrome"
 WAIT_TIME_SECOND = 300
 BATHROOM_NUM = 2
 
@@ -68,7 +69,7 @@ def mission_start_command_set():
 
     set_mission_to_team(Pattern("1388846285376.png").similar(0.85), "1387033402847.png", 5)
     set_mission_to_team(Pattern("1388846322199.png").similar(0.85), "1387033166364.png", 37)
-    set_mission_to_team(Pattern("1388846396919.png").similar(0.85), "1388059885299.png", 11)
+    set_mission_to_team(Pattern("1388846396919.png").similar(0.85), "1388059885299.png", 6)
     go_back_main_page()
 
 def set_mission_to_team(missionStartingImg,teamImg,missionNum):
@@ -102,7 +103,7 @@ def give_mission_img(mission_num):
     if mission_num == 5:
         return "1387209175148.png"
     if mission_num == 6:
-        return "1387033032093.png"
+        return "1416231295422.png"
     if mission_num == 9:
         return "1387209560323.png"
     if mission_num == 11:
@@ -273,7 +274,7 @@ def checkTeamStatus():
         return False
     
     # Check Damega
-    DMAMGE_IMGS = ["1389428953255.png","1389433772472.png","1389426348272.png","1404619465303.png"]
+    DMAMGE_IMGS = ["bathing.png","1389433772472.png","1389426348272.png","1404619465303.png"]
     for damage_img in DMAMGE_IMGS:
         if exists(damage_img):
             can_fight = False
@@ -294,7 +295,7 @@ def goLevelUp():
     command_click(Pattern("1410532310092.png").targetOffset(150,-70))
     command_click("1389366757273.png")
     command_click("1389366916659.png")
-    wait("1389366980271.png",600)
+    wait("compass.png",600)
     command_click("1389366995206.png")
     wait("1392291228091.png",600)
     command_click(Pattern("1392291228091.png").targetOffset(-143,-32))
@@ -307,7 +308,7 @@ def deployAction():
     OFFSET_Y = 50
     for i in xrange(1,7):
         click(location.below(OFFSET_Y*i)) #click all supply checkbox
-    command_click("1387032349938.png")
+    command_click("supply.png")
     sleep(3)
 
 @logged
@@ -347,7 +348,7 @@ def mainloopWithException():
     while(True):
         try:
             print(count)
-            switchApp("Chrome")
+            switchApp(KANCOLLE_BROWSER)
             doAllJob(count)
             sleep(WAIT_TIME_SECOND)
             count += 1
@@ -358,7 +359,7 @@ def mainloopWithException():
 @logged
 def returnToBase():
     command_click_if_exists("1387033729897.png")
-    command_click_if_exists("1391006551340.png")
+    command_click_if_exists("back.png")
     sleep(3)
     if exists("1398499004685.png"):
         return
@@ -370,9 +371,9 @@ def returnToBase():
 def restartKancolle():
     isOnWelcomePage = False
     while not isOnWelcomePage:
-        command_click("1389708507966.png")
+        type(Key.F5)
         sleep(10)
-        isOnWelcomePage = exists("1389709135482.png")
+        isOnWelcomePage = exists("login_page.png")
     command_click(Pattern("1389708826061.png").targetOffset(209,156))
     sleep(10)
 
