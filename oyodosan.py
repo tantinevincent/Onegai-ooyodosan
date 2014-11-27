@@ -69,7 +69,7 @@ def mission_start_command_set():
 
     set_mission_to_team(Pattern("1388846285376.png").similar(0.85), "1387033402847.png", 5)
     set_mission_to_team(Pattern("1388846322199.png").similar(0.85), "1387033166364.png", 37)
-    set_mission_to_team(Pattern("1388846396919.png").similar(0.85), "1388059885299.png", 6)
+    set_mission_to_team(Pattern("1388846396919.png").similar(0.85), "1388059885299.png", 21)
     go_back_main_page()
 
 def set_mission_to_team(missionStartingImg,teamImg,missionNum):
@@ -371,7 +371,7 @@ def returnToBase():
 def restartKancolle():
     isOnWelcomePage = False
     while not isOnWelcomePage:
-        type(Key.F5)
+        command_click("reload.png")
         sleep(10)
         isOnWelcomePage = exists("login_page.png")
     command_click(Pattern("1389708826061.png").targetOffset(209,156))
@@ -379,4 +379,4 @@ def restartKancolle():
 
 
 if __name__ == "__main__":
-    mainloopWithException()
+    #mainloopWithException()
