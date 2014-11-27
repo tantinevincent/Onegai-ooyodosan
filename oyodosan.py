@@ -63,9 +63,9 @@ def mission_select(team_img, mission_img):
     command_click( "1387032878455.png")
 @logged
 def mission_start_command_set():
-    GO_MISSION_IMG = Pattern("1387899218156.png").similar(0.60)  ;command_click(GO_MISSION_IMG)
-    FAR_FIGHT_IMG = "1387031368107.png"  ;command_click(FAR_FIGHT_IMG)
-    waitVanish(FAR_FIGHT_IMG)
+    command_click(Pattern("attack.png").similar(0.60))
+    command_click("expedition.png")
+    waitVanish("expedition.png")
 
     set_mission_to_team(Pattern("1388846285376.png").similar(0.85), "1387033402847.png", 5)
     set_mission_to_team(Pattern("1388846322199.png").similar(0.85), "1387033166364.png", 37)
@@ -126,7 +126,7 @@ def click_expedition_report():
     has_back_ship = False
     while( True ):
         print('ready check report')
-        wait(Pattern("1388314294537.png").similar(0.60),60)
+        wait(Pattern("attack.png").similar(0.60),60)
         
         if not exists(BACK_FLAG_IMG):
             return has_back_ship;
@@ -207,10 +207,6 @@ def confirmShipToBathroom():
 def isNotRepairing(ship):
     return not ship.right().exists("1391245338826.png")
 
-def changePage():
-    command_click(Pattern("1387806921137.png").similar(0.60))
-    go_back_main_page()
-
 @logged
 def setQuest():
     command_click("1388155958539.png")
@@ -289,7 +285,7 @@ def checkTeamStatus():
 
 @logged
 def goLevelUp():
-    command_click(Pattern("1389366639971.png").similar(0.60))
+    command_click(Pattern("attack.png").similar(0.60))
     command_click("1389366660837.png")
     command_click(Pattern("1401557578765.png").targetOffset(4,5))
     command_click(Pattern("1410532310092.png").targetOffset(150,-70))
@@ -361,7 +357,7 @@ def returnToBase():
     command_click_if_exists("1387033729897.png")
     command_click_if_exists("back.png")
     sleep(3)
-    if exists("1398499004685.png"):
+    if exists("attack.png"):
         return
     
     # Can not back to base, restart kancolle
@@ -379,4 +375,4 @@ def restartKancolle():
 
 
 if __name__ == "__main__":
-    #mainloopWithException()
+    mainloopWithException()
