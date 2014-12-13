@@ -1,0 +1,11 @@
+[system]
+KANCOLLE_BROWSER: Firefox
+WAIT_TIME_SECOND: 300
+
+[fleet]
+BATHROOM_NUM: 2
+
+[expedition]
+TEAM_2: 5
+TEAM_3: 37
+TEAM_4: 21

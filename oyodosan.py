@@ -1,6 +1,11 @@
-KANCOLLE_BROWSER = "Chrome"
-WAIT_TIME_SECOND = 300
-BATHROOM_NUM = 2
+from ConfigParser import SafeConfigParser
+
+KANCOLLE_BROWSER = None
+WAIT_TIME_SECOND = None
+BATHROOM_NUM = None
+TEAM_2_EXPEDITION = None
+TEAM_3_EXPEDITION = None
+TEAM_4_EXPEDITION = None
 
 def logged(f):
     def wrapped():
@@ -67,9 +72,9 @@ def mission_start_command_set():
     command_click("expedition.png")
     waitVanish("expedition.png")
 
-    set_mission_to_team(Pattern("1388846285376.png").similar(0.85), "1387033402847.png", 5)
-    set_mission_to_team(Pattern("1388846322199.png").similar(0.85), "1387033166364.png", 37)
-    set_mission_to_team(Pattern("1388846396919.png").similar(0.85), "1388059885299.png", 21)
+    set_mission_to_team(Pattern("1388846285376.png").similar(0.85), "1387033402847.png", TEAM_2_EXPEDITION)
+    set_mission_to_team(Pattern("1388846322199.png").similar(0.85), "1387033166364.png", TEAM_3_EXPEDITION)
+    set_mission_to_team(Pattern("1388846396919.png").similar(0.85), "1388059885299.png", TEAM_4_EXPEDITION)
     go_back_main_page()
 
 def set_mission_to_team(missionStartingImg,teamImg,missionNum):
@@ -259,11 +264,11 @@ def checkTeamStatus():
     command_click("1389872443599.png")
 
     # Check Tired
-    command_click("1411745005884.png")
-    command_click(Pattern("1411745029811.png").targetOffset(22,-10))
-    is_need_rest = exists("1411745124736.png")
-    command_click_if_exists(Pattern("1411745124736.png").targetOffset(14,87))
-    command_click_if_exists(Pattern("1411746862467.png").targetOffset(241,37))
+    command_click("replenishment.png")
+    command_click(Pattern("mamiya.png").targetOffset(22,-10))
+    is_need_rest = exists("mamiya_prompt.png")
+    command_click_if_exists(Pattern("mamiya_prompt.png").targetOffset(-73,71))
+    command_click_if_exists(Pattern("replenishment_selection.png").targetOffset(241,37))
 
     if is_need_rest:
         go_back_main_page()
@@ -367,7 +372,7 @@ def returnToBase():
 def restartKancolle():
     isOnWelcomePage = False
     while not isOnWelcomePage:
-        command_click("reload.png")
+        command_click(Pattern("reload.png").similar(0.80))
         sleep(10)
         isOnWelcomePage = exists("login_page.png")
     command_click(Pattern("1389708826061.png").targetOffset(209,156))
@@ -375,4 +380,14 @@ def restartKancolle():
 
 
 if __name__ == "__main__":
+    config_path = sys.argv[0] + ".sikuli/config"
+    parser = SafeConfigParser()
+    parser.read(config_path)
+    WAIT_TIME_SECOND = parser.getint('system', 'WAIT_TIME_SECOND')
+    KANCOLLE_BROWSER = parser.get('system', 'KANCOLLE_BROWSER')
+    BATHROOM_NUM = parser.getint('fleet', 'BATHROOM_NUM')
+    TEAM_2_EXPEDITION = parser.getint('expedition', 'TEAM_2')
+    TEAM_3_EXPEDITION = parser.getint('expedition', 'TEAM_3')
+    TEAM_4_EXPEDITION = parser.getint('expedition', 'TEAM_4')
+
     mainloopWithException()
