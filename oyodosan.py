@@ -56,8 +56,8 @@ def depot_command_set():
         
     go_back_main_page()
 
-def mission_select(team_img, mission_img):
-    command_click(mission_img)
+def expedition_select(team_img, expedition_img):
+    command_click(expedition_img)
     if exists("1387038600652.png"):
         return
     command_click("1387031567759.png")
@@ -67,61 +67,61 @@ def mission_select(team_img, mission_img):
         return
     command_click( "1387032878455.png")
 @logged
-def mission_start_command_set():
+def expedition_start_command_set():
     command_click(Pattern("attack.png").similar(0.60))
     command_click("expedition.png")
     waitVanish("expedition.png")
 
-    set_mission_to_team(Pattern("1388846285376.png").similar(0.85), "1387033402847.png", TEAM_2_EXPEDITION)
-    set_mission_to_team(Pattern("1388846322199.png").similar(0.85), "1387033166364.png", TEAM_3_EXPEDITION)
-    set_mission_to_team(Pattern("1388846396919.png").similar(0.85), "1388059885299.png", TEAM_4_EXPEDITION)
+    set_expedition_to_team(Pattern("1388846285376.png").similar(0.85), "1387033402847.png", TEAM_2_EXPEDITION)
+    set_expedition_to_team(Pattern("1388846322199.png").similar(0.85), "1387033166364.png", TEAM_3_EXPEDITION)
+    set_expedition_to_team(Pattern("1388846396919.png").similar(0.85), "1388059885299.png", TEAM_4_EXPEDITION)
     go_back_main_page()
 
-def set_mission_to_team(missionStartingImg,teamImg,missionNum):
-    go_to_mission_page(missionNum)
-    if exists(missionStartingImg):
-        return_first_mission_page(missionNum)
+def set_expedition_to_team(expeditionStartingImg,teamImg,expeditionNum):
+    go_to_expedition_page(expeditionNum)
+    if exists(expeditionStartingImg):
+        return_first_expedition_page(expeditionNum)
         return;
     
-    mission_select(teamImg, give_mission_img(missionNum) )
+    expedition_select(teamImg, give_expedition_img(expeditionNum) )
     sleep(3)
-    return_first_mission_page(missionNum)
+    return_first_expedition_page(expeditionNum)
     wait("1392385820341.png")
      
-def go_to_mission_page(missionNum):
-    if missionNum >= 9 and missionNum <= 16:
+def go_to_expedition_page(expeditionNum):
+    if expeditionNum >= 9 and expeditionNum <= 16:
         command_click("1387209524972.png")
-    if missionNum >= 17 and missionNum <= 23:
+    if expeditionNum >= 17 and expeditionNum <= 23:
         command_click("1398785973670.png")
-    if missionNum >= 33 and missionNum <= 39:
+    if expeditionNum >= 33 and expeditionNum <= 39:
         command_click("1408874255262.png")
         
-def return_first_mission_page(missionNum):
-    if missionNum >= 9:
+def return_first_expedition_page(expeditionNum):
+    if expeditionNum >= 9:
         command_click("1392385763531.png")
        
-def give_mission_img(mission_num):
-    if mission_num == 2:
+def give_expedition_img(expedition_num):
+    if expedition_num == 2:
         return "1397144479391.png"
-    if mission_num == 3:
+    if expedition_num == 3:
         return "1387031464298.png"
-    if mission_num == 5:
+    if expedition_num == 5:
         return "1387209175148.png"
-    if mission_num == 6:
+    if expedition_num == 6:
         return "1416231295422.png"
-    if mission_num == 9:
+    if expedition_num == 9:
         return "1387209560323.png"
-    if mission_num == 11:
+    if expedition_num == 11:
         return "1416136085338.png"
-    if mission_num == 13:
+    if expedition_num == 13:
         return "1396085248048.png"
-    if mission_num == 21:
+    if expedition_num == 21:
         return "1398786009118.png"
-    if mission_num == 36:
+    if expedition_num == 36:
         return "1414315920215.png"
-    if mission_num == 37:
+    if expedition_num == 37:
         return "1414945655959.png"
-    if mission_num == 38:
+    if expedition_num == 38:
         return "1414315905380.png"
 
 @logged
@@ -319,7 +319,7 @@ def deployAndExpedition():
         depot_command_set()
         is_back = click_expedition_report()
         
-    mission_start_command_set()
+    expedition_start_command_set()
     return click_expedition_report()
 
 def doAllJob(count):
