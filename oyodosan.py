@@ -40,11 +40,11 @@ def reset_mouse():
     hover(Location(0,0))
     
 def go_back_main_page():
-    command_click("1387033729897.png")
+    command_click("base.png")
     
 @logged
 def depot_command_set():
-    DEPOT_IMG = "1387637113285.png"; command_click(DEPOT_IMG)
+    command_click("supply.png")
     
     TEAM_DEPOT_IMGS = ["1387032194821.png", "1387036182979.png", "1388059801467.png"]
 
@@ -60,15 +60,15 @@ def expedition_select(team_img, expedition_img):
     command_click(expedition_img)
     if exists("1387038600652.png"):
         return
-    command_click("1387031567759.png")
+    command_click("decision.png")
     command_click(team_img)
    
     if exists("1398785493829.png"):
         return
-    command_click( "1387032878455.png")
+    command_click("expedition_start.png")
 @logged
 def expedition_start_command_set():
-    command_click(Pattern("attack.png").similar(0.60))
+    command_click(Pattern("sortie.png").similar(0.60))
     command_click("expedition.png")
     waitVanish("expedition.png")
 
@@ -90,39 +90,39 @@ def set_expedition_to_team(expeditionStartingImg,teamImg,expeditionNum):
      
 def go_to_expedition_page(expeditionNum):
     if expeditionNum >= 9 and expeditionNum <= 16:
-        command_click("1387209524972.png")
+        command_click("world_2.png")
     if expeditionNum >= 17 and expeditionNum <= 23:
-        command_click("1398785973670.png")
+        command_click("world_3.png")
     if expeditionNum >= 33 and expeditionNum <= 39:
-        command_click("1408874255262.png")
+        command_click("world_5.png")
         
 def return_first_expedition_page(expeditionNum):
     if expeditionNum >= 9:
-        command_click("1392385763531.png")
+        command_click("world_1.png")
        
 def give_expedition_img(expedition_num):
     if expedition_num == 2:
-        return "1397144479391.png"
+        return "expedition_2.png"
     if expedition_num == 3:
-        return "1387031464298.png"
+        return "expedition_3.png"
     if expedition_num == 5:
-        return "1387209175148.png"
+        return "expedition_5.png"
     if expedition_num == 6:
-        return "1416231295422.png"
+        return "expedition_6.png"
     if expedition_num == 9:
-        return "1387209560323.png"
+        return "expedition_9.png"
     if expedition_num == 11:
-        return "1416136085338.png"
+        return "expedition_11.png"
     if expedition_num == 13:
-        return "1396085248048.png"
+        return "expedition_13.png"
     if expedition_num == 21:
-        return "1398786009118.png"
+        return "expedition_21.png"
     if expedition_num == 36:
-        return "1414315920215.png"
+        return "expedition_36.png"
     if expedition_num == 37:
-        return "1414945655959.png"
+        return "expedition_37.png"
     if expedition_num == 38:
-        return "1414315905380.png"
+        return "expedition_38.png"
 
 @logged
 def click_expedition_report():
@@ -131,15 +131,14 @@ def click_expedition_report():
     has_back_ship = False
     while( True ):
         print('ready check report')
-        wait(Pattern("attack.png").similar(0.60),60)
+        wait(Pattern("sortie.png").similar(0.60),60)
         
         if not exists(BACK_FLAG_IMG):
             return has_back_ship;
         SOME_POSITION_IMG = BACK_FLAG_IMG
         command_click(SOME_POSITION_IMG)
         print('click next')
-        NEXT_IMG = "1387037875272.png"
-        wait(NEXT_IMG, 20);
+        wait("next.png", 20);
         command_click(NEXT_IMG)
         command_click(NEXT_IMG)
         has_back_ship = True
@@ -147,8 +146,8 @@ def click_expedition_report():
 ######### BATH Related ###############################
 @logged
 def bathroom_command_set():
-    command_click("1387899191835.png")
-    wait("1387098209315.png",20)
+    command_click("docking.png")
+    wait("base.png",20)
     print('need_check_bathroom_next')
     emptyBathroomNum = getEmptyBathroomNum()
     if emptyBathroomNum == 0:
@@ -197,16 +196,16 @@ def getOtherShip():
             return target.getCenter()
 
 def returnShipList():
-    find("1411817491322.png").right(50).click()
+    find("base.png").right(50).click()
 
 def confirmShipToBathroom():
-    command_click("1387805544369.png")
-    if not exists("1387806196232.png"):
+    command_click("docking_start.png")
+    if not exists("ok.png"):
         returnShipList()
         return False
     
-    command_click("1387806196232.png")
-    waitVanish("1387806196232.png")
+    command_click("ok.png")
+    waitVanish("ok.png")
     return True
 
 def isNotRepairing(ship):
@@ -214,15 +213,15 @@ def isNotRepairing(ship):
 
 @logged
 def setQuest():
-    command_click("1388155958539.png")
-    command_click("1388156008876.png")
+    command_click("quest.png")
+    command_click("oyodo.png")
     
     while True:
-        while exists("1388489674990.png"):
-            command_click("1388489674990.png")
+        while exists("quest_success.png"):
+            command_click("quest_success.png")
             
-            while exists("1388489870661.png"):
-                command_click("1388489870661.png")
+            while exists("close.png"):
+                command_click("close.png")
 
         sleep(2)
         clickQuest(Pattern("1395100897154.png").similar(0.85))
@@ -239,29 +238,29 @@ def setQuest():
            
         command_click("1388156384056.png")
         
-    command_click("1388157044386.png")
+    command_click("back.png")
 
 def clickQuest(img):
-    if exists(img,1) and not find(img).right().exists("1398338331456.png"):
+    if exists(img,1) and not find(img).right().exists("quest_activating.png"):
         command_click(img)
 
 def readReport(is_go_night_fight= False):  
-    while not exists("1404742801749.png") and not exists("1389422324464.png"):
+    while not exists("night_attack_or_stop_pursuit.png") and not exists("1389422324464.png"):
         sleep(5)
 
     if not is_go_night_fight:
-        command_click_if_exists(Pattern("1404742801749.png").targetOffset(-100,0))
+        command_click_if_exists(Pattern("night_attack_or_stop_pursuit.png").targetOffset(-100,0))
     else:
-        command_click_if_exists(Pattern("1404742801749.png").targetOffset(105,-9))
+        command_click_if_exists(Pattern("night_attack_or_stop_pursuit.png").targetOffset(105,-9))
 
 def sendBackCommand(is_night_fight = False):
-    while not exists(Pattern("1389505758652.png").targetOffset(102,-12),1):
+    while not exists(Pattern("advance_or_retreat.png").targetOffset(102,-12),1):
         click(Location(700,200))
         
-    command_click(Pattern("1389505758652.png").targetOffset(102,-12))
+    command_click(Pattern("advance_or_retreat.png").targetOffset(102,-12))
 @logged
 def checkTeamStatus():    
-    command_click("1389872443599.png")
+    command_click("organize.png")
 
     # Check Tired
     command_click("replenishment.png")
@@ -275,14 +274,14 @@ def checkTeamStatus():
         return False
     
     # Check Damega
-    DMAMGE_IMGS = ["bathing.png","1389433772472.png","1389426348272.png","1404619465303.png"]
+    DMAMGE_IMGS = ["bathing.png","minor_damage.png","moderate_damage.png","heavily_damage.png"]
     for damage_img in DMAMGE_IMGS:
         if exists(damage_img):
             can_fight = False
             go_back_main_page()
             return False
         
-    command_click("1389872472167.png")
+    command_click("supply_small.png")
     
     deployAction()
     go_back_main_page()
@@ -290,16 +289,16 @@ def checkTeamStatus():
 
 @logged
 def goLevelUp():
-    command_click(Pattern("attack.png").similar(0.60))
-    command_click("1389366660837.png")
+    command_click(Pattern("sortie.png").similar(0.60))
+    command_click("fight.png")
     command_click(Pattern("1401557578765.png").targetOffset(4,5))
     command_click(Pattern("1410532310092.png").targetOffset(150,-70))
-    command_click("1389366757273.png")
-    command_click("1389366916659.png")
+    command_click("decision.png")
+    command_click("fight_start.png")
     wait("compass.png",600)
-    command_click("1389366995206.png")
-    wait("1392291228091.png",600)
-    command_click(Pattern("1392291228091.png").targetOffset(-143,-32))
+    command_click("compass.png")
+    wait("formations.png",600)
+    command_click(Pattern("formations.png").targetOffset(-143,-32))
     readReport()
     sendBackCommand()
 
@@ -309,7 +308,7 @@ def deployAction():
     OFFSET_Y = 50
     for i in xrange(1,7):
         click(location.below(OFFSET_Y*i)) #click all supply checkbox
-    command_click("supply.png")
+    command_click("resupply_everything .png")
     sleep(3)
 
 @logged
@@ -359,10 +358,10 @@ def mainloopWithException():
 
 @logged
 def returnToBase():
-    command_click_if_exists("1387033729897.png")
+    command_click_if_exists("base.png")
     command_click_if_exists("back.png")
     sleep(3)
-    if exists("attack.png"):
+    if exists("sortie.png"):
         return
     
     # Can not back to base, restart kancolle
@@ -374,8 +373,8 @@ def restartKancolle():
     while not isOnWelcomePage:
         command_click(Pattern("reload.png").similar(0.80))
         sleep(10)
-        isOnWelcomePage = exists("login_page.png")
-    command_click(Pattern("1389708826061.png").targetOffset(209,156))
+        isOnWelcomePage = exists(Pattern("welcome_page.png").targetOffset(209,156))
+    command_click(Pattern("welcome_page.png").targetOffset(209,156))
     sleep(10)
 
 
