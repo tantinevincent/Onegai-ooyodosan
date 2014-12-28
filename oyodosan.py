@@ -45,25 +45,21 @@ def go_back_main_page():
 @logged
 def depot_command_set():
     command_click("supply.png")
-    
-    TEAM_DEPOT_IMGS = ["1387032194821.png", "1387036182979.png", "1388059801467.png"]
-
-    for TEAM_DEPOT_IMG in TEAM_DEPOT_IMGS:
-        command_click(TEAM_DEPOT_IMG)
-        if exists("1411897468603.png"):
-            continue
-        deployAction()
+    for team_mark in ["team_2_mark_not_selected.png", "team_3_mark_not_selected.png", "team_4_mark_not_selected.png"]:
+        command_click(team_mark)
+        if not exists("status_on_expedition.png"):
+            deployAction()
         
     go_back_main_page()
 
 def expedition_select(team_img, expedition_img):
     command_click(expedition_img)
-    if exists("1387038600652.png"):
+    if exists("stop_expedition.png"):
         return
     command_click("decision.png")
     command_click(team_img)
    
-    if exists("1398785493829.png"):
+    if exists("status_on_expedition.png"):
         return
     command_click("expedition_start.png")
 @logged
@@ -72,9 +68,9 @@ def expedition_start_command_set():
     command_click("expedition.png")
     waitVanish("expedition.png")
 
-    set_expedition_to_team(Pattern("1388846285376.png").similar(0.85), "1387033402847.png", TEAM_2_EXPEDITION)
-    set_expedition_to_team(Pattern("1388846322199.png").similar(0.85), "1387033166364.png", TEAM_3_EXPEDITION)
-    set_expedition_to_team(Pattern("1388846396919.png").similar(0.85), "1388059885299.png", TEAM_4_EXPEDITION)
+    set_expedition_to_team(Pattern("team_2_mark.png").similar(0.85), "team_2_mark.png", TEAM_2_EXPEDITION)
+    set_expedition_to_team(Pattern("team_3_mark.png").similar(0.85), "team_3_mark_not_selected.png", TEAM_3_EXPEDITION)
+    set_expedition_to_team(Pattern("team_4_mark.png").similar(0.85), "team_4_mark_not_selected.png", TEAM_4_EXPEDITION)
     go_back_main_page()
 
 def set_expedition_to_team(expeditionStartingImg,teamImg,expeditionNum):
@@ -86,7 +82,7 @@ def set_expedition_to_team(expeditionStartingImg,teamImg,expeditionNum):
     expedition_select(teamImg, give_expedition_img(expeditionNum) )
     sleep(3)
     return_first_expedition_page(expeditionNum)
-    wait("1392385820341.png")
+    wait("stop_expedition.png")
      
 def go_to_expedition_page(expeditionNum):
     if expeditionNum >= 9 and expeditionNum <= 16:
@@ -127,16 +123,14 @@ def give_expedition_img(expedition_num):
 @logged
 def click_expedition_report():
     print('check report')
-    BACK_FLAG_IMG = "1387039183276.png"
     has_back_ship = False
     while( True ):
         print('ready check report')
         wait(Pattern("sortie.png").similar(0.60),60)
-        
-        if not exists(BACK_FLAG_IMG):
+        if not exists("expedition_team_back_message.png"):
             return has_back_ship;
-        SOME_POSITION_IMG = BACK_FLAG_IMG
-        command_click(SOME_POSITION_IMG)
+        
+        command_click("expedition_team_back_message.png")
         print('click next')
         wait("next.png", 20);
         command_click("next.png")
@@ -176,23 +170,23 @@ def bathroom_command_set():
     #go_back_main_page()
 
 def getEmptyBathroomNum():
-    return BATHROOM_NUM - len(safeFindAll("1415436564714.png"))
+    return BATHROOM_NUM - len(safeFindAll("bucket.png"))
 def hasBathroom():
     return getEmptyBathroomNum() > 0
 
 def clickBathroom():
-    command_click(Pattern("1391244821938.png").targetOffset(-185,0))
+    command_click(Pattern("dock.png").targetOffset(-185,0))
     
 def getTeamOneShipList():
-    ships = safeFind(Pattern("1389513591381.png").similar(0.85)) + safeFindAll(Pattern("1389513609792.png").similar(0.85))
+    ships = safeFind(Pattern("team_1_flagship_mark.png").similar(0.85)) + safeFindAll(Pattern("team_1_mark.png").similar(0.85))
     return filter(isNotRepairing, ships)
 
 def getOtherShip():
-    base_location = find(Pattern("1411742433993.png").targetOffset(-40,0)).getTarget().below(20)
+    base_location = find(Pattern("docking_titlebar.png").targetOffset(-40,0)).getTarget().below(20)
     OFFSET_Y = 30
     for i in xrange(0,3):
         target = Region(base_location.getX()-200, base_location.getY()+OFFSET_Y*i-10, 500, 40)
-        if not target.exists(Pattern("1389513609792.png").similar(0.85)) and not target.exists(Pattern("1389513591381.png").similar(0.85)) and not target.exists("1391245338826.png"):
+        if not target.exists(Pattern("team_1_mark.png").similar(0.85)) and not target.exists(Pattern("team_1_flagship_mark.png").similar(0.85)) and not target.exists("in_repairing.png"):
             return target.getCenter()
 
 def returnShipList():
@@ -209,7 +203,7 @@ def confirmShipToBathroom():
     return True
 
 def isNotRepairing(ship):
-    return not ship.right().exists("1391245338826.png")
+    return not ship.right().exists("in_repairing.png")
 
 @logged
 def setQuest():
@@ -224,19 +218,19 @@ def setQuest():
                 command_click("close.png")
 
         sleep(2)
-        clickQuest(Pattern("1395100897154.png").similar(0.85))
-        clickQuest(Pattern("1395054972516.png").similar(0.85))
-        clickQuest("1389624013080.png")
-        clickQuest(Pattern("1390781513309.png").similar(0.95))
-        clickQuest(Pattern("1390710610032.png").similar(0.95))
-        clickQuest(Pattern("1390726151408.png").similar(0.95))
-        clickQuest(Pattern("1414973590474.png").similar(0.90))
-        clickQuest(Pattern("1414316070741.png").similar(0.90))
+        clickQuest(Pattern("quest_d2.png").similar(0.85))
+        clickQuest(Pattern("quest_d4.png").similar(0.85))
+        clickQuest("quest_type_docking_or_supply.png")
+        clickQuest(Pattern("quest_bd1.png").similar(0.95))
+        clickQuest(Pattern("quest_bd2.png").similar(0.95))
+        clickQuest(Pattern("quest_bd3.png").similar(0.95))
+        clickQuest(Pattern("quest_d9.png").similar(0.90))
+        clickQuest(Pattern("quest_d11.png").similar(0.90))
         
-        if not exists("1388156384056.png"):
+        if not exists("quest_next_page.png"):
             break
            
-        command_click("1388156384056.png")
+        command_click("quest_next_page.png")
         
     command_click("back.png")
 
@@ -245,7 +239,7 @@ def clickQuest(img):
         command_click(img)
 
 def readReport(is_go_night_fight= False):  
-    while not exists("night_attack_or_stop_pursuit.png") and not exists("1389422324464.png"):
+    while not exists("night_attack_or_stop_pursuit.png") and not exists("fight_report.png"):
         sleep(5)
 
     if not is_go_night_fight:
@@ -274,7 +268,7 @@ def checkTeamStatus():
         return False
     
     # Check Damega
-    DMAMGE_IMGS = ["bathing.png","minor_damage.png","moderate_damage.png","heavily_damage.png"]
+    DMAMGE_IMGS = ["status_repair_damage.png","status_minor_damage.png","status_moderate_damage.png","status_heavily_damage.png"]
     for damage_img in DMAMGE_IMGS:
         if exists(damage_img):
             can_fight = False
@@ -291,8 +285,8 @@ def checkTeamStatus():
 def goLevelUp():
     command_click(Pattern("sortie.png").similar(0.60))
     command_click("fight.png")
-    command_click(Pattern("1401557578765.png").targetOffset(4,5))
-    command_click(Pattern("1410532310092.png").targetOffset(150,-70))
+    command_click(Pattern("worlds.png").targetOffset(4,5))
+    command_click(Pattern("world_3_maps.png").targetOffset(150,-70))
     command_click("decision.png")
     command_click("fight_start.png")
     wait("compass.png",600)
@@ -304,7 +298,7 @@ def goLevelUp():
 
 @logged
 def deployAction():
-    location = find(Pattern("1411739357686.png").targetOffset(-71,2)).getTarget()
+    location = find(Pattern("resupply_team_marks.png").targetOffset(-71,2)).getTarget()
     OFFSET_Y = 50
     for i in xrange(1,7):
         click(location.below(OFFSET_Y*i)) #click all supply checkbox
