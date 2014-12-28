@@ -67,59 +67,53 @@ def goExpedition(onExpeditionImg,teamImg,expeditionNum):
     world_img = getWorldImageAboutExpedition(expeditionNum)
     clickWithResetMouse(world_img)
     if exists(onExpeditionImg):
-        return_first_expedition_page(expeditionNum)
         return;
     
-	expedition_img = getExpeditionImage(expeditionNum)
-	clickWithResetMouse(expedition_img)
+    expedition_img = getExpeditionImage(expeditionNum)
+    clickWithResetMouse(expedition_img)
+    
     if exists("stop_expedition.png"):
         return
     clickWithResetMouse("decision.png")
     clickWithResetMouse(teamImg)
-   
     if exists("status_on_expedition.png"):
         return
     clickWithResetMouse("expedition_start.png")
-    sleep(3)
-	
-    return_first_expedition_page(expeditionNum)
-    wait("stop_expedition.png")
+    sleep(5)
      
 def getWorldImageAboutExpedition(expeditionNum):
+    if expeditionNum < 9:
+        return "world_1.png"
     if expeditionNum >= 9 and expeditionNum <= 16:
         return "world_2.png"
     if expeditionNum >= 17 and expeditionNum <= 23:
         return "world_3.png"
     if expeditionNum >= 33 and expeditionNum <= 39:
         return "world_5.png"
-        
-def return_first_expedition_page(expeditionNum):
-    if expeditionNum >= 9:
-        clickWithResetMouse("world_1.png")
-       
+
 def getExpeditionImage(expedition_num):
     if expedition_num == 2:
-        return Pattern("expedition_2.png").similar(0.90)
+        return "expedition_2.png"
     if expedition_num == 3:
-        return Pattern("expedition_3.png").similar(0.90)
+        return "expedition_3.png"
     if expedition_num == 5:
-        return Pattern("expedition_5.png").similar(0.90)
+        return "expedition_5.png"
     if expedition_num == 6:
-        return Pattern("expedition_6.png").similar(0.90)
+        return "expedition_6.png"
     if expedition_num == 9:
-        return Pattern("expedition_9.png").similar(0.90)
+        return "expedition_9.png"
     if expedition_num == 11:
-        return Pattern("expedition_11.png").similar(0.90)
+        return "expedition_11.png"
     if expedition_num == 13:
-        return Pattern("expedition_13.png").similar(0.90)
+        return "expedition_13.png"
     if expedition_num == 21:
-        return Pattern("expedition_21.png").similar(0.90)
+        return "expedition_21.png"
     if expedition_num == 36:
-        return Pattern("expedition_36.png").similar(0.90)
+        return "expedition_36.png"
     if expedition_num == 37:
-        return Pattern("expedition_37.png").similar(0.90)
+        return "expedition_37.png"
     if expedition_num == 38:
-        return Pattern("expedition_38.png").similar(0.90)
+        return "expedition_38.png"
 
 @logged
 def click_expedition_report():
@@ -261,14 +255,11 @@ def checkTeamStatus():
     # Check Tired
     clickWithResetMouse("replenishment.png")
     clickWithResetMouse(Pattern("mamiya.png").targetOffset(22,-10))
-    is_need_rest = exists("mamiya_prompt.png")
-    clickIfExistsWithResetMouse(Pattern("mamiya_prompt.png").targetOffset(-73,71))
-    clickIfExistsWithResetMouse(Pattern("replenishment_selection.png").targetOffset(241,37))
-
-    if is_need_rest:
+    if not exists("mamiya_prompt.png"):
+        clickWithResetMouse(Pattern("replenishment_selection.png").targetOffset(241,37))
         go_back_to_home_port()
         return False
-    
+    clickIfExistsWithResetMouse(Pattern("mamiya_prompt.png").targetOffset(14,89))
     # Check Damega
     for damage_img in ["status_repair_damage.png","status_minor_damage.png","status_moderate_damage.png","status_heavily_damage.png"]:
         if exists(damage_img):
