@@ -139,8 +139,8 @@ def click_expedition_report():
         command_click(SOME_POSITION_IMG)
         print('click next')
         wait("next.png", 20);
-        command_click(NEXT_IMG)
-        command_click(NEXT_IMG)
+        command_click("next.png")
+        command_click("next.png")
         has_back_ship = True
 
 ######### BATH Related ###############################
