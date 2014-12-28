@@ -27,125 +27,126 @@ def safeFind(target):
         result = []
     return result
 
-def command_click(img):
+def clickWithResetMouse(img):
     wait(img,30)
     click(img)
     reset_mouse()
 
-def command_click_if_exists(img):
+def clickIfExistsWithResetMouse(img):
     if exists(img,1):
-        command_click(img)
+        clickWithResetMouse(img)
         
 def reset_mouse():
     hover(Location(0,0))
     
-def go_back_main_page():
-    command_click("base.png")
+def go_back_to_home_port():
+    clickWithResetMouse("base.png")
     
 @logged
-def depot_command_set():
-    command_click("supply.png")
+def resupplyFleetsOfExpedition():
+    clickWithResetMouse("supply.png")
     for team_mark in ["team_2_mark_not_selected.png", "team_3_mark_not_selected.png", "team_4_mark_not_selected.png"]:
-        command_click(team_mark)
+        clickWithResetMouse(team_mark)
         if not exists("status_on_expedition.png"):
-            deployAction()
+            resupplyFleet()
         
-    go_back_main_page()
+    go_back_to_home_port()
 
-def expedition_select(team_img, expedition_img):
-    command_click(expedition_img)
-    if exists("stop_expedition.png"):
-        return
-    command_click("decision.png")
-    command_click(team_img)
-   
-    if exists("status_on_expedition.png"):
-        return
-    command_click("expedition_start.png")
 @logged
 def expedition_start_command_set():
-    command_click(Pattern("sortie.png").similar(0.60))
-    command_click("expedition.png")
+    clickWithResetMouse(Pattern("sortie.png").similar(0.60))
+    clickWithResetMouse("expedition.png")
     waitVanish("expedition.png")
 
-    set_expedition_to_team(Pattern("team_2_mark.png").similar(0.85), "team_2_mark.png", TEAM_2_EXPEDITION)
-    set_expedition_to_team(Pattern("team_3_mark.png").similar(0.85), "team_3_mark_not_selected.png", TEAM_3_EXPEDITION)
-    set_expedition_to_team(Pattern("team_4_mark.png").similar(0.85), "team_4_mark_not_selected.png", TEAM_4_EXPEDITION)
-    go_back_main_page()
+    goExpedition(Pattern("team_2_mark.png").similar(0.85), "team_2_mark.png", TEAM_2_EXPEDITION)
+    goExpedition(Pattern("team_3_mark.png").similar(0.85), "team_3_mark_not_selected.png", TEAM_3_EXPEDITION)
+    goExpedition(Pattern("team_4_mark.png").similar(0.85), "team_4_mark_not_selected.png", TEAM_4_EXPEDITION)
+    go_back_to_home_port()
 
-def set_expedition_to_team(expeditionStartingImg,teamImg,expeditionNum):
-    go_to_expedition_page(expeditionNum)
-    if exists(expeditionStartingImg):
+def goExpedition(onExpeditionImg,teamImg,expeditionNum):
+    world_img = getWorldImageAboutExpedition(expeditionNum)
+    clickWithResetMouse(world_img)
+    if exists(onExpeditionImg):
         return_first_expedition_page(expeditionNum)
         return;
     
-    expedition_select(teamImg, give_expedition_img(expeditionNum) )
+	expedition_img = getExpeditionImage(expeditionNum)
+	clickWithResetMouse(expedition_img)
+    if exists("stop_expedition.png"):
+        return
+    clickWithResetMouse("decision.png")
+    clickWithResetMouse(teamImg)
+   
+    if exists("status_on_expedition.png"):
+        return
+    clickWithResetMouse("expedition_start.png")
     sleep(3)
+	
     return_first_expedition_page(expeditionNum)
     wait("stop_expedition.png")
      
-def go_to_expedition_page(expeditionNum):
+def getWorldImageAboutExpedition(expeditionNum):
     if expeditionNum >= 9 and expeditionNum <= 16:
-        command_click("world_2.png")
+        return "world_2.png"
     if expeditionNum >= 17 and expeditionNum <= 23:
-        command_click("world_3.png")
+        return "world_3.png"
     if expeditionNum >= 33 and expeditionNum <= 39:
-        command_click("world_5.png")
+        return "world_5.png"
         
 def return_first_expedition_page(expeditionNum):
     if expeditionNum >= 9:
-        command_click("world_1.png")
+        clickWithResetMouse("world_1.png")
        
-def give_expedition_img(expedition_num):
+def getExpeditionImage(expedition_num):
     if expedition_num == 2:
-        return "expedition_2.png"
+        return Pattern("expedition_2.png").similar(0.90)
     if expedition_num == 3:
-        return "expedition_3.png"
+        return Pattern("expedition_3.png").similar(0.90)
     if expedition_num == 5:
-        return "expedition_5.png"
+        return Pattern("expedition_5.png").similar(0.90)
     if expedition_num == 6:
-        return "expedition_6.png"
+        return Pattern("expedition_6.png").similar(0.90)
     if expedition_num == 9:
-        return "expedition_9.png"
+        return Pattern("expedition_9.png").similar(0.90)
     if expedition_num == 11:
-        return "expedition_11.png"
+        return Pattern("expedition_11.png").similar(0.90)
     if expedition_num == 13:
-        return "expedition_13.png"
+        return Pattern("expedition_13.png").similar(0.90)
     if expedition_num == 21:
-        return "expedition_21.png"
+        return Pattern("expedition_21.png").similar(0.90)
     if expedition_num == 36:
-        return "expedition_36.png"
+        return Pattern("expedition_36.png").similar(0.90)
     if expedition_num == 37:
-        return "expedition_37.png"
+        return Pattern("expedition_37.png").similar(0.90)
     if expedition_num == 38:
-        return "expedition_38.png"
+        return Pattern("expedition_38.png").similar(0.90)
 
 @logged
 def click_expedition_report():
     print('check report')
-    has_back_ship = False
+    isFleetBack = False
     while( True ):
         print('ready check report')
         wait(Pattern("sortie.png").similar(0.60),60)
         if not exists("expedition_team_back_message.png"):
-            return has_back_ship;
+            return isFleetBack;
         
-        command_click("expedition_team_back_message.png")
+        clickWithResetMouse("expedition_team_back_message.png")
         print('click next')
         wait("next.png", 20);
-        command_click("next.png")
-        command_click("next.png")
-        has_back_ship = True
+        clickWithResetMouse("next.png")
+        clickWithResetMouse("next.png")
+        isFleetBack = True
 
 ######### BATH Related ###############################
 @logged
 def bathroom_command_set():
-    command_click("docking.png")
+    clickWithResetMouse("docking.png")
     wait("base.png",20)
     print('need_check_bathroom_next')
     emptyBathroomNum = getEmptyBathroomNum()
     if emptyBathroomNum == 0:
-        go_back_main_page()
+        go_back_to_home_port()
         return
     
     clickBathroom()
@@ -164,10 +165,10 @@ def bathroom_command_set():
             break
         clickBathroom()
 
-    go_back_main_page()    
+    go_back_to_home_port()    
     #putShipsToBathroom(getTeamOneShipList)
     #putShipsToBathroom(getOtherShipList, True)
-    #go_back_main_page()
+    #go_back_to_home_port()
 
 def getEmptyBathroomNum():
     return BATHROOM_NUM - len(safeFindAll("bucket.png"))
@@ -175,7 +176,7 @@ def hasBathroom():
     return getEmptyBathroomNum() > 0
 
 def clickBathroom():
-    command_click(Pattern("dock.png").targetOffset(-185,0))
+    clickWithResetMouse(Pattern("dock.png").targetOffset(-185,0))
     
 def getTeamOneShipList():
     ships = safeFind(Pattern("team_1_flagship_mark.png").similar(0.85)) + safeFindAll(Pattern("team_1_mark.png").similar(0.85))
@@ -193,12 +194,12 @@ def returnShipList():
     find("base.png").right(50).click()
 
 def confirmShipToBathroom():
-    command_click("docking_start.png")
+    clickWithResetMouse("docking_start.png")
     if not exists("ok.png"):
         returnShipList()
         return False
     
-    command_click("ok.png")
+    clickWithResetMouse("ok.png")
     waitVanish("ok.png")
     return True
 
@@ -207,15 +208,15 @@ def isNotRepairing(ship):
 
 @logged
 def setQuest():
-    command_click("quest.png")
-    command_click("oyodo.png")
+    clickWithResetMouse("quest.png")
+    clickWithResetMouse("oyodo.png")
     
     while True:
         while exists("quest_success.png"):
-            command_click("quest_success.png")
+            clickWithResetMouse("quest_success.png")
             
             while exists("close.png"):
-                command_click("close.png")
+                clickWithResetMouse("close.png")
 
         sleep(2)
         clickQuest(Pattern("quest_d2.png").similar(0.85))
@@ -230,86 +231,84 @@ def setQuest():
         if not exists("quest_next_page.png"):
             break
            
-        command_click("quest_next_page.png")
+        clickWithResetMouse("quest_next_page.png")
         
-    command_click("back.png")
+    clickWithResetMouse("back.png")
 
 def clickQuest(img):
     if exists(img,1) and not find(img).right().exists("quest_activating.png"):
-        command_click(img)
+        clickWithResetMouse(img)
 
 def readReport(is_go_night_fight= False):  
     while not exists("night_attack_or_stop_pursuit.png") and not exists("fight_report.png"):
         sleep(5)
 
     if not is_go_night_fight:
-        command_click_if_exists(Pattern("night_attack_or_stop_pursuit.png").targetOffset(-100,0))
+        clickIfExistsWithResetMouse(Pattern("night_attack_or_stop_pursuit.png").targetOffset(-100,0))
     else:
-        command_click_if_exists(Pattern("night_attack_or_stop_pursuit.png").targetOffset(105,-9))
+        clickIfExistsWithResetMouse(Pattern("night_attack_or_stop_pursuit.png").targetOffset(105,-9))
 
 def sendBackCommand(is_night_fight = False):
     while not exists(Pattern("advance_or_retreat.png").targetOffset(102,-12),1):
         click(Location(700,200))
         
-    command_click(Pattern("advance_or_retreat.png").targetOffset(102,-12))
+    clickWithResetMouse(Pattern("advance_or_retreat.png").targetOffset(102,-12))
+
 @logged
 def checkTeamStatus():    
-    command_click("organize.png")
+    clickWithResetMouse("organize.png")
 
     # Check Tired
-    command_click("replenishment.png")
-    command_click(Pattern("mamiya.png").targetOffset(22,-10))
+    clickWithResetMouse("replenishment.png")
+    clickWithResetMouse(Pattern("mamiya.png").targetOffset(22,-10))
     is_need_rest = exists("mamiya_prompt.png")
-    command_click_if_exists(Pattern("mamiya_prompt.png").targetOffset(-73,71))
-    command_click_if_exists(Pattern("replenishment_selection.png").targetOffset(241,37))
+    clickIfExistsWithResetMouse(Pattern("mamiya_prompt.png").targetOffset(-73,71))
+    clickIfExistsWithResetMouse(Pattern("replenishment_selection.png").targetOffset(241,37))
 
     if is_need_rest:
-        go_back_main_page()
+        go_back_to_home_port()
         return False
     
     # Check Damega
-    DMAMGE_IMGS = ["status_repair_damage.png","status_minor_damage.png","status_moderate_damage.png","status_heavily_damage.png"]
-    for damage_img in DMAMGE_IMGS:
+    for damage_img in ["status_repair_damage.png","status_minor_damage.png","status_moderate_damage.png","status_heavily_damage.png"]:
         if exists(damage_img):
-            can_fight = False
-            go_back_main_page()
+            go_back_to_home_port()
             return False
         
-    command_click("supply_small.png")
-    
-    deployAction()
-    go_back_main_page()
+    clickWithResetMouse("supply_small.png")
+    resupplyFleet()
+    go_back_to_home_port()
     return True
 
 @logged
 def goLevelUp():
-    command_click(Pattern("sortie.png").similar(0.60))
-    command_click("fight.png")
-    command_click(Pattern("worlds.png").targetOffset(4,5))
-    command_click(Pattern("world_3_maps.png").targetOffset(150,-70))
-    command_click("decision.png")
-    command_click("fight_start.png")
+    clickWithResetMouse(Pattern("sortie.png").similar(0.60))
+    clickWithResetMouse("fight.png")
+    clickWithResetMouse(Pattern("worlds.png").targetOffset(4,5))
+    clickWithResetMouse(Pattern("world_3_maps.png").targetOffset(150,-70))
+    clickWithResetMouse("decision.png")
+    clickWithResetMouse("fight_start.png")
     wait("compass.png",600)
-    command_click("compass.png")
+    clickWithResetMouse("compass.png")
     wait("formations.png",600)
-    command_click(Pattern("formations.png").targetOffset(-143,-32))
+    clickWithResetMouse(Pattern("formations.png").targetOffset(-143,-32))
     readReport()
     sendBackCommand()
 
 @logged
-def deployAction():
+def resupplyFleet():
     location = find(Pattern("resupply_team_marks.png").targetOffset(-71,2)).getTarget()
     OFFSET_Y = 50
     for i in xrange(1,7):
-        click(location.below(OFFSET_Y*i)) #click all supply checkbox
-    command_click("resupply_everything .png")
+        click(location.below(OFFSET_Y*i)) #click all resupply check box
+    clickWithResetMouse("resupply_everything.png")
     sleep(3)
 
 @logged
-def deployAndExpedition():
+def resupplyAndGoExpedition():
     is_back = True
     while is_back:
-        depot_command_set()
+        resupplyFleetsOfExpedition()
         is_back = click_expedition_report()
         
     expedition_start_command_set()
@@ -332,7 +331,7 @@ def doAllJob(count):
     click_expedition_report()
     is_back = True
     while is_back:
-        is_back = deployAndExpedition()
+        is_back = resupplyAndGoExpedition()
           
     #click_expedition_report()
     reset_mouse()
@@ -352,8 +351,8 @@ def mainloopWithException():
 
 @logged
 def returnToBase():
-    command_click_if_exists("base.png")
-    command_click_if_exists("back.png")
+    clickIfExistsWithResetMouse("base.png")
+    clickIfExistsWithResetMouse("back.png")
     sleep(3)
     if exists("sortie.png"):
         return
@@ -365,10 +364,10 @@ def returnToBase():
 def restartKancolle():
     isOnWelcomePage = False
     while not isOnWelcomePage:
-        command_click(Pattern("reload.png").similar(0.80))
+        clickWithResetMouse(Pattern("reload.png").similar(0.80))
         sleep(10)
         isOnWelcomePage = exists(Pattern("welcome_page.png").targetOffset(209,156))
-    command_click(Pattern("welcome_page.png").targetOffset(209,156))
+    clickWithResetMouse(Pattern("welcome_page.png").targetOffset(209,156))
     sleep(10)
 
 
