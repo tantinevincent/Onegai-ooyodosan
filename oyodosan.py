@@ -7,6 +7,17 @@ TEAM_2_EXPEDITION = None
 TEAM_3_EXPEDITION = None
 TEAM_4_EXPEDITION = None
 
+class Expedition:
+    def __init__(self, expeditionNum):
+        self.expeditionNum = expeditionNum
+        self.worldNum = (expeditionNum-1) / 8 + 1
+        
+    def getWorldImage(self):
+        return "world_" + str(self.worldNum) + ".png"
+     
+    def getImage(self):
+        return "expedition_" + ("0" if self.expeditionNum < 10 else "") + str(self.expeditionNum) + ".png"
+
 def logged(f):
     def wrapped():
         print f.__name__ + " start"
@@ -63,15 +74,13 @@ def expedition_start_command_set():
     goExpedition(Pattern("team_4_mark.png").similar(0.85), "team_4_mark_not_selected.png", TEAM_4_EXPEDITION)
     go_back_to_home_port()
 
-def goExpedition(onExpeditionImg,teamImg,expeditionNum):
-    world_img = getWorldImageAboutExpedition(expeditionNum)
-    clickWithResetMouse(world_img)
+def goExpedition(onExpeditionImg, teamImg, expedition):
+    clickWithResetMouse(expedition.getWorldImage())
     if exists(onExpeditionImg):
         return;
     
-    expedition_img = getExpeditionImage(expeditionNum)
-    clickWithResetMouse(expedition_img)
-    
+    clickWithResetMouse(expedition.getImage())
+	
     if exists("stop_expedition.png"):
         return
     clickWithResetMouse("decision.png")
@@ -81,40 +90,6 @@ def goExpedition(onExpeditionImg,teamImg,expeditionNum):
     clickWithResetMouse("expedition_start.png")
     sleep(5)
      
-def getWorldImageAboutExpedition(expeditionNum):
-    if expeditionNum < 9:
-        return "world_1.png"
-    if expeditionNum >= 9 and expeditionNum <= 16:
-        return "world_2.png"
-    if expeditionNum >= 17 and expeditionNum <= 23:
-        return "world_3.png"
-    if expeditionNum >= 33 and expeditionNum <= 39:
-        return "world_5.png"
-
-def getExpeditionImage(expedition_num):
-    if expedition_num == 2:
-        return "expedition_2.png"
-    if expedition_num == 3:
-        return "expedition_3.png"
-    if expedition_num == 5:
-        return "expedition_5.png"
-    if expedition_num == 6:
-        return "expedition_6.png"
-    if expedition_num == 9:
-        return "expedition_9.png"
-    if expedition_num == 11:
-        return "expedition_11.png"
-    if expedition_num == 13:
-        return "expedition_13.png"
-    if expedition_num == 21:
-        return "expedition_21.png"
-    if expedition_num == 36:
-        return "expedition_36.png"
-    if expedition_num == 37:
-        return "expedition_37.png"
-    if expedition_num == 38:
-        return "expedition_38.png"
-
 @logged
 def click_expedition_report():
     print('check report')
@@ -369,8 +344,8 @@ if __name__ == "__main__":
     WAIT_TIME_SECOND = parser.getint('system', 'WAIT_TIME_SECOND')
     KANCOLLE_BROWSER = parser.get('system', 'KANCOLLE_BROWSER')
     BATHROOM_NUM = parser.getint('fleet', 'BATHROOM_NUM')
-    TEAM_2_EXPEDITION = parser.getint('expedition', 'TEAM_2')
-    TEAM_3_EXPEDITION = parser.getint('expedition', 'TEAM_3')
-    TEAM_4_EXPEDITION = parser.getint('expedition', 'TEAM_4')
+    TEAM_2_EXPEDITION = Expedition(parser.getint('expedition', 'TEAM_2'))
+    TEAM_3_EXPEDITION = Expedition(parser.getint('expedition', 'TEAM_3'))
+    TEAM_4_EXPEDITION = Expedition(parser.getint('expedition', 'TEAM_4'))
 
-    mainloopWithException()
+    expedition_start_command_set()
