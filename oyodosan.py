@@ -255,11 +255,11 @@ def checkTeamStatus():
     # Check Tired
     clickWithResetMouse("replenishment.png")
     clickWithResetMouse(Pattern("mamiya.png").targetOffset(22,-10))
-    if not exists("mamiya_prompt.png"):
-        clickWithResetMouse(Pattern("replenishment_selection.png").targetOffset(241,37))
+    if exists("mamiya_prompt.png"):
+        clickIfExistsWithResetMouse(Pattern("mamiya_prompt.png").targetOffset(14,89))
         go_back_to_home_port()
         return False
-    clickIfExistsWithResetMouse(Pattern("mamiya_prompt.png").targetOffset(14,89))
+    clickWithResetMouse(Pattern("replenishment_selection.png").targetOffset(241,37))
     # Check Damega
     for damage_img in ["status_repair_damage.png","status_minor_damage.png","status_moderate_damage.png","status_heavily_damage.png"]:
         if exists(damage_img):
