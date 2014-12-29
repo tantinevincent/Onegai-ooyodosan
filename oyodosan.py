@@ -13,10 +13,10 @@ class Expedition:
         self.worldNum = (expeditionNum-1) / 8 + 1
         
     def getWorldImage(self):
-        return "world_" + str(self.worldNum) + ".png"
+        return "expedition/world_" + str(self.worldNum) + ".png"
      
     def getImage(self):
-        return "expedition_" + ("0" if self.expeditionNum < 10 else "") + str(self.expeditionNum) + ".png"
+        return "expedition/expedition_" + ("0" if self.expeditionNum < 10 else "") + str(self.expeditionNum) + ".png"
 
 def logged(f):
     def wrapped():
@@ -348,4 +348,4 @@ if __name__ == "__main__":
     TEAM_3_EXPEDITION = Expedition(parser.getint('expedition', 'TEAM_3'))
     TEAM_4_EXPEDITION = Expedition(parser.getint('expedition', 'TEAM_4'))
 
-    expedition_start_command_set()
+    mainloopWithException()
