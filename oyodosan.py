@@ -18,12 +18,25 @@ class Expedition:
     def getImage(self):
         return "expedition/expedition_" + ("0" if self.expeditionNum < 10 else "") + str(self.expeditionNum) + ".png"
 
+class Cron:
+    def __init__(self, round=3):
+        self.round = round
+        self.count = 0
+    def __call__(self, f):
+        dctr_self = self
+        def wrapped(*args, **kwargs):
+            dctr_self.count += 1
+            if (dctr_self.count-1) % dctr_self.round == 0:
+                return f(*args, **kwargs)
+        return wrapped    
+
 def logged(f):
-    def wrapped():
+    def wrapped(*args, **kwargs):
         print f.__name__ + " start"
-        return f()
+        return f(*args, **kwargs)
     return wrapped 
 
+@logged
 def safeFindAll(target):
     try:
         result = [x for x in findAll(target)]
@@ -31,6 +44,7 @@ def safeFindAll(target):
         result = []
     return result
 
+@logged
 def safeFind(target):
     try:
         result = [find(target)]
@@ -38,18 +52,22 @@ def safeFind(target):
         result = []
     return result
 
+@logged
 def clickWithResetMouse(img):
     wait(img,30)
     click(img)
     reset_mouse()
 
+@logged
 def clickIfExistsWithResetMouse(img):
     if exists(img,1):
         clickWithResetMouse(img)
-        
+
+@logged        
 def reset_mouse():
     hover(Location(0,0))
-    
+
+@logged    
 def go_back_to_home_port():
     clickWithResetMouse("base.png")
     
@@ -74,6 +92,7 @@ def expedition_start_command_set():
     goExpedition(Pattern("team_4_mark.png").similar(0.85), "team_4_mark_not_selected.png", TEAM_4_EXPEDITION)
     go_back_to_home_port()
 
+@logged
 def goExpedition(onExpeditionImg, teamImg, expedition):
     clickWithResetMouse(expedition.getWorldImage())
     if exists(onExpeditionImg):
@@ -92,7 +111,6 @@ def goExpedition(onExpeditionImg, teamImg, expedition):
      
 @logged
 def click_expedition_report():
-    print('check report')
     isFleetBack = False
     while( True ):
         print('ready check report')
@@ -135,22 +153,24 @@ def bathroom_command_set():
         clickBathroom()
 
     go_back_to_home_port()    
-    #putShipsToBathroom(getTeamOneShipList)
-    #putShipsToBathroom(getOtherShipList, True)
-    #go_back_to_home_port()
 
+@logged
 def getEmptyBathroomNum():
     return BATHROOM_NUM - len(safeFindAll("bucket.png"))
+@logged
 def hasBathroom():
     return getEmptyBathroomNum() > 0
 
+@logged
 def clickBathroom():
     clickWithResetMouse(Pattern("dock.png").targetOffset(-185,0))
-    
+
+@logged
 def getTeamOneShipList():
     ships = safeFind(Pattern("team_1_flagship_mark.png").similar(0.85)) + safeFindAll(Pattern("team_1_mark.png").similar(0.85))
     return filter(isNotRepairing, ships)
 
+@logged
 def getOtherShip():
     base_location = find(Pattern("docking_titlebar.png").targetOffset(-40,0)).getTarget().below(20)
     OFFSET_Y = 30
@@ -159,9 +179,11 @@ def getOtherShip():
         if not target.exists(Pattern("team_1_mark.png").similar(0.85)) and not target.exists(Pattern("team_1_flagship_mark.png").similar(0.85)) and not target.exists("in_repairing.png"):
             return target.getCenter()
 
+@logged
 def returnShipList():
     find("base.png").right(50).click()
 
+@logged
 def confirmShipToBathroom():
     clickWithResetMouse("docking_start.png")
     if not exists("ok.png"):
@@ -172,9 +194,11 @@ def confirmShipToBathroom():
     waitVanish("ok.png")
     return True
 
+@logged
 def isNotRepairing(ship):
     return not ship.right().exists("in_repairing.png")
 
+@Cron(round = 5)
 @logged
 def setQuest():
     clickWithResetMouse("quest.png")
@@ -204,10 +228,12 @@ def setQuest():
         
     clickWithResetMouse("back.png")
 
+@logged
 def clickQuest(img):
     if exists(img,1) and not find(img).right().exists("quest_activating.png"):
         clickWithResetMouse(img)
-
+        
+@logged
 def readReport(is_go_night_fight= False):  
     while not exists("night_attack_or_stop_pursuit.png") and not exists("fight_report.png"):
         sleep(5)
@@ -217,6 +243,7 @@ def readReport(is_go_night_fight= False):
     else:
         clickIfExistsWithResetMouse(Pattern("night_attack_or_stop_pursuit.png").targetOffset(105,-9))
 
+@logged
 def sendBackCommand(is_night_fight = False):
     while not exists(Pattern("advance_or_retreat.png").targetOffset(102,-12),1):
         click(Location(700,200))
@@ -280,6 +307,7 @@ def resupplyAndGoExpedition():
     expedition_start_command_set()
     return click_expedition_report()
 
+@logged
 def doAllJob(count):
     # Level UP
     is_back = click_expedition_report()   
@@ -290,10 +318,11 @@ def doAllJob(count):
     # Get Resource
     is_back = click_expedition_report()
     bathroom_command_set()
-    if count %5 == 0:    
-        click_expedition_report()
-        setQuest()
-            
+    #if count %5 == 0:    
+    #    click_expedition_report()
+    #    setQuest()
+    click_expedition_report()
+    setQuest()           
     click_expedition_report()
     is_back = True
     while is_back:
@@ -301,7 +330,8 @@ def doAllJob(count):
           
     #click_expedition_report()
     reset_mouse()
-    
+
+@logged
 def mainloopWithException():
     count = 0
     while(True):
@@ -335,7 +365,6 @@ def restartKancolle():
         isOnWelcomePage = exists(Pattern("welcome_page.png").targetOffset(209,156))
     clickWithResetMouse(Pattern("welcome_page.png").targetOffset(209,156))
     sleep(10)
-
 
 if __name__ == "__main__":
     config_path = sys.argv[0] + ".sikuli/config"
