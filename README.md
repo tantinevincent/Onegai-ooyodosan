@@ -6,8 +6,7 @@ This is an automation tool about Kancolle.
 Usage
 =========
   - Download [Sikuli]
-  - Create a folder named oyodosan.sikuli and put in
-  - Excucate Sikuli script
+  - Excucate oyodosan.sikuli
 
 Features
 ========
