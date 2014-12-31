@@ -1,3 +1,5 @@
+from expedition import Expedition 
+from fleet import Fleet
 from ConfigParser import SafeConfigParser
 
 KANCOLLE_BROWSER = None
@@ -6,17 +8,6 @@ BATHROOM_NUM = None
 TEAM_2_EXPEDITION = None
 TEAM_3_EXPEDITION = None
 TEAM_4_EXPEDITION = None
-
-class Expedition:
-    def __init__(self, expeditionNum):
-        self.expeditionNum = expeditionNum
-        self.worldNum = (expeditionNum-1) / 8 + 1
-        
-    def getWorldImage(self):
-        return "expedition/world_" + str(self.worldNum) + ".png"
-     
-    def getImage(self):
-        return "expedition/expedition_" + ("0" if self.expeditionNum < 10 else "") + str(self.expeditionNum) + ".png"
 
 class Cron:
     def __init__(self, round=3):
@@ -72,24 +63,24 @@ def go_back_to_home_port():
     clickWithResetMouse("base.png")
     
 @logged
-def resupplyFleetsOfExpedition():
+def resupplyFleetsOfExpedition(fleets):
     clickWithResetMouse("supply.png")
-    for team_mark in ["team_2_mark_not_selected.png", "team_3_mark_not_selected.png", "team_4_mark_not_selected.png"]:
-        clickWithResetMouse(team_mark)
+    for fleet in fleets:
+        clickWithResetMouse(fleet.getNotSelectedImage())
         if not exists("status_on_expedition.png"):
             resupplyFleet()
         
     go_back_to_home_port()
 
 @logged
-def expedition_start_command_set():
+def expedition_start_command_set(fleets, expeditions):
     clickWithResetMouse(Pattern("sortie.png").similar(0.60))
     clickWithResetMouse("expedition.png")
     waitVanish("expedition.png")
 
-    goExpedition(Pattern("team_2_mark.png").similar(0.85), "team_2_mark.png", TEAM_2_EXPEDITION)
-    goExpedition(Pattern("team_3_mark.png").similar(0.85), "team_3_mark_not_selected.png", TEAM_3_EXPEDITION)
-    goExpedition(Pattern("team_4_mark.png").similar(0.85), "team_4_mark_not_selected.png", TEAM_4_EXPEDITION)
+    for fleet, expedition in zip(fleets, expeditions):
+        goExpedition(fleet.getImage(), fleet.getNotSelectedImage(), expedition)
+        
     go_back_to_home_port()
 
 @logged
@@ -299,12 +290,15 @@ def resupplyFleet():
 
 @logged
 def resupplyAndGoExpedition():
+    fleets = [Fleet(2), Fleet(3), Fleet(4)]
+    expeditions = [TEAM_2_EXPEDITION, TEAM_3_EXPEDITION, TEAM_4_EXPEDITION]
+    
     is_back = True
     while is_back:
-        resupplyFleetsOfExpedition()
+        resupplyFleetsOfExpedition(fleets)
         is_back = click_expedition_report()
         
-    expedition_start_command_set()
+    expedition_start_command_set(fleets, expeditions)
     return click_expedition_report()
 
 @logged
@@ -367,7 +361,7 @@ def restartKancolle():
     sleep(10)
 
 if __name__ == "__main__":
-    config_path = sys.argv[0] + ".sikuli/config"
+    config_path = sys.argv[0] + ".sikuli/../config"
     parser = SafeConfigParser()
     parser.read(config_path)
     WAIT_TIME_SECOND = parser.getint('system', 'WAIT_TIME_SECOND')
@@ -377,4 +371,7 @@ if __name__ == "__main__":
     TEAM_3_EXPEDITION = Expedition(parser.getint('expedition', 'TEAM_3'))
     TEAM_4_EXPEDITION = Expedition(parser.getint('expedition', 'TEAM_4'))
 
-    mainloopWithException()
+    resupplyAndGoExpedition()
+
+    #mainloopWithException()
+            
