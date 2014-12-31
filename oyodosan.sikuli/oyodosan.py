@@ -371,7 +371,5 @@ if __name__ == "__main__":
     TEAM_3_EXPEDITION = Expedition(parser.getint('expedition', 'TEAM_3'))
     TEAM_4_EXPEDITION = Expedition(parser.getint('expedition', 'TEAM_4'))
 
-    resupplyAndGoExpedition()
-
-    #mainloopWithException()
+    mainloopWithException()
             
