@@ -5,9 +5,8 @@ from ConfigParser import SafeConfigParser
 KANCOLLE_BROWSER = None
 WAIT_TIME_SECOND = None
 BATHROOM_NUM = None
-TEAM_2_EXPEDITION = None
-TEAM_3_EXPEDITION = None
-TEAM_4_EXPEDITION = None
+EXPEDITIONS = None
+FLEETS = None
 
 class Cron:
     def __init__(self, round=3):
@@ -27,7 +26,6 @@ def logged(f):
         return f(*args, **kwargs)
     return wrapped 
 
-@logged
 def safeFindAll(target):
     try:
         result = [x for x in findAll(target)]
@@ -35,7 +33,6 @@ def safeFindAll(target):
         result = []
     return result
 
-@logged
 def safeFind(target):
     try:
         result = [find(target)]
@@ -43,18 +40,15 @@ def safeFind(target):
         result = []
     return result
 
-@logged
 def clickWithResetMouse(img):
     wait(img,30)
     click(img)
     reset_mouse()
 
-@logged
 def clickIfExistsWithResetMouse(img):
     if exists(img,1):
         clickWithResetMouse(img)
-
-@logged        
+       
 def reset_mouse():
     hover(Location(0,0))
 
@@ -290,15 +284,12 @@ def resupplyFleet():
 
 @logged
 def resupplyAndGoExpedition():
-    fleets = [Fleet(2), Fleet(3), Fleet(4)]
-    expeditions = [TEAM_2_EXPEDITION, TEAM_3_EXPEDITION, TEAM_4_EXPEDITION]
-    
     is_back = True
     while is_back:
-        resupplyFleetsOfExpedition(fleets)
+        resupplyFleetsOfExpedition(FLEETS)
         is_back = click_expedition_report()
         
-    expedition_start_command_set(fleets, expeditions)
+    expedition_start_command_set(FLEETS, EXPEDITIONS)
     return click_expedition_report()
 
 @logged
@@ -361,15 +352,21 @@ def restartKancolle():
     sleep(10)
 
 if __name__ == "__main__":
-    config_path = sys.argv[0] + ".sikuli/../config"
+    #config_path = sys.argv[0] + ".sikuli/../config"   #Executing from sikuli IDE
+    config_path = sys.argv[0] + "/../../config"        #Executing from console
+
     parser = SafeConfigParser()
     parser.read(config_path)
     WAIT_TIME_SECOND = parser.getint('system', 'WAIT_TIME_SECOND')
     KANCOLLE_BROWSER = parser.get('system', 'KANCOLLE_BROWSER')
     BATHROOM_NUM = parser.getint('fleet', 'BATHROOM_NUM')
-    TEAM_2_EXPEDITION = Expedition(parser.getint('expedition', 'TEAM_2'))
-    TEAM_3_EXPEDITION = Expedition(parser.getint('expedition', 'TEAM_3'))
-    TEAM_4_EXPEDITION = Expedition(parser.getint('expedition', 'TEAM_4'))
+    
+    EXPEDITIONS = [
+            Expedition(parser.getint('expedition', 'TEAM_2')), 
+            Expedition(parser.getint('expedition', 'TEAM_3')), 
+            Expedition(parser.getint('expedition', 'TEAM_4'))]
+    
+    FLEETS = [Fleet(2), Fleet(3), Fleet(4)]
 
     mainloopWithException()
             

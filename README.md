@@ -6,7 +6,7 @@ This is an automation tool about Kancolle.
 Usage
 =========
   - Download [Sikuli]
-  - Excucate oyodosan.sikuli
+  - Excucate oyodosan.sikuli, like "java -jar sikuli-script -r oyodosan.sikuli"
 
 Features
 ========
