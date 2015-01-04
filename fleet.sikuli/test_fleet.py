@@ -7,6 +7,9 @@ class ExpeditionTestCase(unittest.TestCase):
     def testFleetOneMarks(self):
         fleet = Fleet(1)
         self.assertEqual(fleet.getImage(), "fleet_1_mark.png")
+    def testFleetOneNotSelectedMark(self):
+        fleet = Fleet(1)
+        self.assertEqual(fleet.getNotSelectedImage(), "fleet_1_mark_not_selected.png")
     def testFleetOneAllMarks(self):
         fleet = Fleet(1)
         marks = fleet.getAllImages()
