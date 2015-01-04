@@ -1,5 +1,7 @@
 class Fleet:
     def __init__(self, fleet_num):
+        if fleet_num <= 0:
+            raise ValueError("Fleet number should not less than zero.")
         self.fleet_num = fleet_num
         self.has_flag_ship = (fleet_num == 1)
      
