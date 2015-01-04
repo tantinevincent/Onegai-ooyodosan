@@ -73,14 +73,16 @@ def expedition_start_command_set(fleets, expeditions):
     waitVanish("expedition.png")
 
     for fleet, expedition in zip(fleets, expeditions):
-        goExpedition(fleet.getImage(), fleet.getNotSelectedImage(), expedition)
+        goExpedition(fleet, expedition)
         
     go_back_to_home_port()
 
 @logged
-def goExpedition(onExpeditionImg, teamImg, expedition):
+def goExpedition(fleet, expedition):
     clickWithResetMouse(expedition.getWorldImage())
-    if exists(onExpeditionImg):
+    
+    # if fleet is on expedition
+    if exists(fleet.getImage()):
         return;
     
     clickWithResetMouse(expedition.getImage())
@@ -88,7 +90,7 @@ def goExpedition(onExpeditionImg, teamImg, expedition):
     if exists("stop_expedition.png"):
         return
     clickWithResetMouse("decision.png")
-    clickWithResetMouse(teamImg)
+    clickWithResetMouse(fleet.getNotSelectedImage())
     if exists("status_on_expedition.png"):
         return
     clickWithResetMouse("expedition_start.png")
@@ -100,10 +102,10 @@ def click_expedition_report():
     while( True ):
         print('ready check report')
         wait(Pattern("sortie.png").similar(0.60),60)
-        if not exists("expedition_team_back_message.png"):
+        if not exists("expedition_fleet_back_message.png"):
             return isFleetBack;
         
-        clickWithResetMouse("expedition_team_back_message.png")
+        clickWithResetMouse("expedition_fleet_back_message.png")
         print('click next')
         wait("next.png", 20);
         clickWithResetMouse("next.png")
@@ -122,10 +124,11 @@ def bathroom_command_set():
         return
     
     clickBathroom()
-    ships = getTeamOneShipList()
+    fleets = [Fleet(1)]
+    ships = get_need_repairing_ship_in_fleets(fleets)
     
     if emptyBathroomNum > 1:
-        otherShip = getOtherShip()
+        otherShip = get_need_repairing_ship_not_in_fleets(fleets)
         ships += [otherShip] if otherShip is not None else []
         
     for ship in ships:
@@ -151,18 +154,29 @@ def clickBathroom():
     clickWithResetMouse(Pattern("dock.png").targetOffset(-185,0))
 
 @logged
-def getTeamOneShipList():
-    ships = safeFind(Pattern("team_1_flagship_mark.png").similar(0.85)) + safeFindAll(Pattern("team_1_mark.png").similar(0.85))
+def get_need_repairing_ship_in_fleets(fleets):
+    ships = []
+    for fleet in fleets:
+        for mark_img in fleet.getAllImages():
+            ships += safeFindAll(Pattern(mark_img).similar(0.85))
+
     return filter(isNotRepairing, ships)
 
 @logged
-def getOtherShip():
+def get_need_repairing_ship_not_in_fleets(fleets):
     base_location = find(Pattern("docking_titlebar.png").targetOffset(-40,0)).getTarget().below(20)
     OFFSET_Y = 30
     for i in xrange(0,3):
         target = Region(base_location.getX()-200, base_location.getY()+OFFSET_Y*i-10, 500, 40)
-        if not target.exists(Pattern("team_1_mark.png").similar(0.85)) and not target.exists(Pattern("team_1_flagship_mark.png").similar(0.85)) and not target.exists("in_repairing.png"):
+        if not is_in_fleets(target, fleets) and not target.exists("in_repairing.png"):
             return target.getCenter()
+
+def is_in_fleets(target, fleets):
+    for fleet in fleets:
+        for mark_img in fleet.getAllImages():
+            if target.exists(Pattern(mark_img).similar(0.85)):
+                return True
+    return False
 
 @logged
 def returnShipList():
@@ -236,7 +250,7 @@ def sendBackCommand(is_night_fight = False):
     clickWithResetMouse(Pattern("advance_or_retreat.png").targetOffset(102,-12))
 
 @logged
-def checkTeamStatus():    
+def check_fleet_status():    
     clickWithResetMouse("organize.png")
 
     # Check Tired
@@ -275,7 +289,7 @@ def goLevelUp():
 
 @logged
 def resupplyFleet():
-    location = find(Pattern("resupply_team_marks.png").targetOffset(-71,2)).getTarget()
+    location = find(Pattern("resupply_fleet_marks.png").targetOffset(-71,2)).getTarget()
     OFFSET_Y = 50
     for i in xrange(1,7):
         click(location.below(OFFSET_Y*i)) #click all resupply check box
@@ -296,7 +310,7 @@ def resupplyAndGoExpedition():
 def doAllJob(count):
     # Level UP
     is_back = click_expedition_report()   
-    can_figit = checkTeamStatus()    
+    can_figit = check_fleet_status()    
     is_back = click_expedition_report()
     if can_figit:
         goLevelUp()
@@ -362,11 +376,11 @@ if __name__ == "__main__":
     BATHROOM_NUM = parser.getint('fleet', 'BATHROOM_NUM')
     
     EXPEDITIONS = [
-            Expedition(parser.getint('expedition', 'TEAM_2')), 
-            Expedition(parser.getint('expedition', 'TEAM_3')), 
-            Expedition(parser.getint('expedition', 'TEAM_4'))]
+            Expedition(parser.getint('expedition', 'FLEET_2')), 
+            Expedition(parser.getint('expedition', 'FLEET_3')),
+            Expedition(parser.getint('expedition', 'FLEET_4'))]
     
     FLEETS = [Fleet(2), Fleet(3), Fleet(4)]
-
+    
     mainloopWithException()
             
