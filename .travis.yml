@@ -9,7 +9,7 @@ install:
 script:
   - coverage run expedition.sikuli/test_expedition.py
   - coverage run fleet.sikuli/test_fleet.py
-  - coverage run quests.sikuli/test_quests.py
+  - coverage run quest_list.sikuli/test_quest_list.py
   - coverage report -m
   
 after_success:
