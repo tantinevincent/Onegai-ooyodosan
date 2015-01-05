@@ -9,3 +9,8 @@ BATHROOM_NUM: 2
 FLEET_2: 2
 FLEET_3: 38
 FLEET_4: 6
+
+[quests]
+bd: 1, 2, 3
+d: 2, 3, 4, 9, 11
+e: 3, 4

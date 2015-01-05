@@ -1,5 +1,6 @@
 from expedition import Expedition 
 from fleet import Fleet
+from quest_list import QuestList
 from ConfigParser import SafeConfigParser
 
 KANCOLLE_BROWSER = None
@@ -7,6 +8,7 @@ WAIT_TIME_SECOND = None
 BATHROOM_NUM = None
 EXPEDITIONS = None
 FLEETS = None
+QUESTS = None
 
 class Cron:
     def __init__(self, round=3):
@@ -211,14 +213,12 @@ def setQuest():
                 clickWithResetMouse("close.png")
 
         sleep(2)
-        clickQuest(Pattern("quest_d2.png").similar(0.85))
-        clickQuest(Pattern("quest_d4.png").similar(0.85))
-        clickQuest("quest_type_docking_or_supply.png")
-        clickQuest(Pattern("quest_bd1.png").similar(0.95))
-        clickQuest(Pattern("quest_bd2.png").similar(0.95))
-        clickQuest(Pattern("quest_bd3.png").similar(0.95))
-        clickQuest(Pattern("quest_d9.png").similar(0.90))
-        clickQuest(Pattern("quest_d11.png").similar(0.90))
+        for quests in QUESTS:
+            quest_type = quests.getQuestTypeImage()
+            if not exists(Pattern(quest_type).similar(0.85)):
+                continue
+            for quest_img in quests.getAllQuestImages():
+                clickQuest(Pattern(quest_img).similar(0.90))
         
         if not exists("quest_next_page.png"):
             break
@@ -339,6 +339,7 @@ def mainloopWithException():
             switchApp(KANCOLLE_BROWSER)
             doAllJob(count)
             sleep(WAIT_TIME_SECOND)
+            print "sleep..."
             count += 1
         except FindFailed :
             print("find failed")
@@ -381,6 +382,12 @@ if __name__ == "__main__":
             Expedition(parser.getint('expedition', 'FLEET_4'))]
     
     FLEETS = [Fleet(2), Fleet(3), Fleet(4)]
+    
+    quests_section = parser._sections["quests"]
+    QUESTS = []
+    for type in filter(lambda x: x != "__name__", quests_section.keys()):
+        quest_nums = [int(quest_num) for quest_num in quests_section[type].split(',')]
+        QUESTS.append(QuestList(type, quest_nums))
     
     mainloopWithException()
             
