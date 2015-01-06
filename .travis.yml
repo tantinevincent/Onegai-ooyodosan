@@ -7,9 +7,10 @@ install:
   - "pip install coverage"
   - "pip install coveralls"
 script:
-  - coverage run expedition.sikuli/test_expedition.py
-  - coverage run fleet.sikuli/test_fleet.py
-  - coverage run quest_list.sikuli/test_quest_list.py
+  - $COVERAGE_FILE=.coverage_expedition coverage run expedition.sikuli/test_expedition.py
+  - $COVERAGE_FILE=.coverage_fleet coverage run fleet.sikuli/test_fleet.py
+  - $COVERAGE_FILE=.coverage_quest_list coverage run quest_list.sikuli/test_quest_list.py
+  - coverage combine
   - coverage report -m
   
 after_success:
