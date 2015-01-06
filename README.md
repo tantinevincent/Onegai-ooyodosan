@@ -1,6 +1,4 @@
 [![Build Status](https://travis-ci.org/tantinevincent/Onegai-oyodosan.svg?branch=master)](https://travis-ci.org/tantinevincent/Onegai-oyodosan)
-[![Coverage Status](https://coveralls.io/repos/tantinevincent/Onegai-oyodosan/badge.png?branch=master)](https://coveralls.io/r/tantinevincent/Onegai-oyodosan?branch=master)
-
 Onegai-oyodosan (おねがい！大淀さん)
 ===============
 
