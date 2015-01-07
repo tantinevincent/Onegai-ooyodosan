@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/tantinevincent/Onegai-oyodosan.svg?branch=master)](https://travis-ci.org/tantinevincent/Onegai-oyodosan)
+[![Coverage Status](https://img.shields.io/coveralls/tantinevincent/Onegai-oyodosan.svg)](https://coveralls.io/r/tantinevincent/Onegai-oyodosan?branch=master)
 Onegai-oyodosan (おねがい！大淀さん)
 ===============
 
@@ -7,7 +8,7 @@ This is an automation tool about Kancolle.
 Usage
 =========
   - Download [Sikuli]
-  - Excucate oyodosan.sikuli, like "java -jar sikuli-script -r oyodosan.sikuli"
+  - Execute oyodosan.sikuli(ex: java -jar sikuli-script.jar -r /your/path/oyodosan.sikuli)
 
 Features
 ========
