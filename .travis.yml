@@ -3,8 +3,15 @@ language: python
 
 python:
   - "2.7"
-
+  
+install:
+  - pip install coverage
+  - pip install coveralls
+  
 script:
-  - python expedition.sikuli/test_expedition.py
-  - python fleet.sikuli/test_fleet.py
-  - python quests.sikuli/test_quests.py
+  - coverage run -a expedition.sikuli/test_expedition.py
+  - coverage run -a fleet.sikuli/test_fleet.py
+  - coverage run -a quests.sikuli/test_quests.py
+  - coverage report -m
+after_success:
+  coveralls
