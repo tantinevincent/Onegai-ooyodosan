@@ -1,6 +1,6 @@
 from expedition import Expedition 
 from fleet import Fleet
-from quest_list import QuestList
+from quests import Quests
 from ConfigParser import SafeConfigParser
 
 KANCOLLE_BROWSER = None
@@ -8,7 +8,7 @@ WAIT_TIME_SECOND = None
 BATHROOM_NUM = None
 EXPEDITIONS = None
 FLEETS = None
-QUESTS = None
+QUESTS_LIST = None
 
 class Cron:
     def __init__(self, round=3):
@@ -213,11 +213,13 @@ def setQuest():
                 clickWithResetMouse("close.png")
 
         sleep(2)
-        for quests in QUESTS:
-            quest_type = quests.getQuestTypeImage()
+        for quests in QUESTS_LIST:
+            quest_type = quests.getTypeImage()
+            print "find " + quest_type
             if not exists(Pattern(quest_type).similar(0.85)):
                 continue
-            for quest_img in quests.getAllQuestImages():
+            for quest_img in quests.getAllImages():
+                print "find " + quest_img
                 clickQuest(Pattern(quest_img).similar(0.90))
         
         if not exists("quest_next_page.png"):
@@ -317,9 +319,6 @@ def doAllJob(count):
     # Get Resource
     is_back = click_expedition_report()
     bathroom_command_set()
-    #if count %5 == 0:    
-    #    click_expedition_report()
-    #    setQuest()
     click_expedition_report()
     setQuest()           
     click_expedition_report()
@@ -338,8 +337,8 @@ def mainloopWithException():
             print(count)
             switchApp(KANCOLLE_BROWSER)
             doAllJob(count)
-            sleep(WAIT_TIME_SECOND)
             print "sleep..."
+            sleep(WAIT_TIME_SECOND)
             count += 1
         except FindFailed :
             print("find failed")
@@ -367,8 +366,8 @@ def restartKancolle():
     sleep(10)
 
 if __name__ == "__main__":
-    #config_path = sys.argv[0] + ".sikuli/../config"   #Executing from sikuli IDE
-    config_path = sys.argv[0] + "/../../config"        #Executing from console
+    #config_path = sys.argv[0] + ".sikuli/../config.ini"   #Executing from sikuli IDE
+    config_path = sys.argv[0] + "/../../config.ini"        #Executing from console
 
     parser = SafeConfigParser()
     parser.read(config_path)
@@ -384,10 +383,10 @@ if __name__ == "__main__":
     FLEETS = [Fleet(2), Fleet(3), Fleet(4)]
     
     quests_section = parser._sections["quests"]
-    QUESTS = []
+    QUESTS_LIST = []
     for type in filter(lambda x: x != "__name__", quests_section.keys()):
-        quest_nums = [int(quest_num) for quest_num in quests_section[type].split(',')]
-        QUESTS.append(QuestList(type, quest_nums))
+        id_list = [id.strip() for id in quests_section[type].split(',')]
+        QUESTS_LIST.append(Quests(type, id_list))
     
     mainloopWithException()
             

@@ -7,4 +7,4 @@ python:
 script:
   - python expedition.sikuli/test_expedition.py
   - python fleet.sikuli/test_fleet.py
-  - python quest_list.sikuli/test_quest_list.py
+  - python quests.sikuli/test_quests.py
