@@ -3,11 +3,7 @@ language: python
 
 python:
   - "2.7"
-  
-install:
-  - pip install --upgrade git+git://github.com/cython/cython@master
-  - pip install sikuli
-  
+
 script:
   - python expedition.sikuli/test_expedition.py
   - python fleet.sikuli/test_fleet.py
