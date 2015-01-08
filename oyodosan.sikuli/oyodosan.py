@@ -1,14 +1,9 @@
 from expedition import Expedition 
 from fleet import Fleet
 from quests import Quests
-from ConfigParser import SafeConfigParser
+from config import Config
 
-KANCOLLE_BROWSER = None
-WAIT_TIME_SECOND = None
-BATHROOM_NUM = None
-EXPEDITIONS = None
-FLEETS = None
-QUESTS_LIST = None
+config = None
 
 class Cron:
     def __init__(self, round=3):
@@ -146,7 +141,7 @@ def bathroom_command_set():
 
 @logged
 def getEmptyBathroomNum():
-    return BATHROOM_NUM - len(safeFindAll("bucket.png"))
+    return config.docker_num - len(safeFindAll("bucket.png"))
 @logged
 def hasBathroom():
     return getEmptyBathroomNum() > 0
@@ -213,7 +208,7 @@ def setQuest():
                 clickWithResetMouse("close.png")
 
         sleep(2)
-        for quests in QUESTS_LIST:
+        for quests in config.quests_list:
             quest_type = quests.getTypeImage()
             print "find " + quest_type
             if not exists(Pattern(quest_type).similar(0.85)):
@@ -302,12 +297,16 @@ def resupplyFleet():
 def resupplyAndGoExpedition():
     is_back = True
     while is_back:
-        resupplyFleetsOfExpedition(FLEETS)
+        resupplyFleetsOfExpedition(config.expedition_fleets)
         is_back = click_expedition_report()
         
-    expedition_start_command_set(FLEETS, EXPEDITIONS)
+    expedition_start_command_set(config.expedition_fleets, config.expeditions)
     return click_expedition_report()
 
+def dismantle_ship():
+    clickWithResetMouse("factory.png")
+    clickWithResetMouse("dismantle.png")
+    
 @logged
 def doAllJob(count):
     # Level UP
@@ -335,10 +334,10 @@ def mainloopWithException():
     while(True):
         try:
             print(count)
-            switchApp(KANCOLLE_BROWSER)
+            switchApp(config.browser)
             doAllJob(count)
             print "sleep..."
-            sleep(WAIT_TIME_SECOND)
+            sleep(config.sleep_time)
             count += 1
         except FindFailed :
             print("find failed")
@@ -368,25 +367,7 @@ def restartKancolle():
 if __name__ == "__main__":
     #config_path = sys.argv[0] + ".sikuli/../config.ini"   #Executing from sikuli IDE
     config_path = sys.argv[0] + "/../../config.ini"        #Executing from console
-
-    parser = SafeConfigParser()
-    parser.read(config_path)
-    WAIT_TIME_SECOND = parser.getint('system', 'WAIT_TIME_SECOND')
-    KANCOLLE_BROWSER = parser.get('system', 'KANCOLLE_BROWSER')
-    BATHROOM_NUM = parser.getint('fleet', 'BATHROOM_NUM')
-    
-    EXPEDITIONS = [
-            Expedition(parser.getint('expedition', 'FLEET_2')), 
-            Expedition(parser.getint('expedition', 'FLEET_3')),
-            Expedition(parser.getint('expedition', 'FLEET_4'))]
-    
-    FLEETS = [Fleet(2), Fleet(3), Fleet(4)]
-    
-    quests_section = parser._sections["quests"]
-    QUESTS_LIST = []
-    for type in filter(lambda x: x != "__name__", quests_section.keys()):
-        id_list = [id.strip() for id in quests_section[type].split(',')]
-        QUESTS_LIST.append(Quests(type, id_list))
+    config = Config(config_path)
     
     mainloopWithException()
             
