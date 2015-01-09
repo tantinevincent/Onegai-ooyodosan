@@ -2,6 +2,7 @@ from expedition import Expedition
 from fleet import Fleet
 from quests import Quests
 from config import Config
+import random
 
 config = None
 
@@ -336,8 +337,9 @@ def mainloopWithException():
             print(count)
             switchApp(config.browser)
             doAllJob(count)
-            print "sleep..."
-            sleep(config.sleep_time)
+            random_sleep_time = random.randrange(int(config.sleep_time*0.9), int(config.sleep_time*1.1))
+            print "sleep " + random_sleep_time + " sec..."
+            sleep(random_sleep_time)
             count += 1
         except FindFailed :
             print("find failed")
