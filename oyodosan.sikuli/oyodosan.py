@@ -338,7 +338,7 @@ def mainloopWithException():
             switchApp(config.browser)
             doAllJob(count)
             random_sleep_time = random.randrange(int(config.sleep_time*0.9), int(config.sleep_time*1.1))
-            print "sleep " + random_sleep_time + " sec..."
+            print "sleep " + str(random_sleep_time) + " sec..."
             sleep(random_sleep_time)
             count += 1
         except FindFailed :
