@@ -33,5 +33,8 @@ class Common:
     def reset_mouse(self):
         hover(Location(0,0))
         
-    def click_decision(self):
+    def make_decision(self):
         self.clickWithResetMouse("decision.png")
+        
+    def back_home_port(self):
+        self.clickWithResetMouse("home_port.png")

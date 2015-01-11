@@ -8,7 +8,7 @@ class FightRunner(Common):
         self.clickWithResetMouse("fight.png")
         self.clickWithResetMouse(Pattern("worlds.png").targetOffset(4,5))
         self.clickWithResetMouse(Pattern("world_3_maps.png").targetOffset(150,-70))
-        self.click_decision()
+        self.make_decision()
         self.clickWithResetMouse("fight_start.png")
         wait("compass.png",600)
         self.clickWithResetMouse("compass.png")

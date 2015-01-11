@@ -3,11 +3,12 @@ from fleet import Fleet
 from quests import Quests
 from config import Config
 from fight_runner import FightRunner
-
+from expedition_runner import ExpeditionRunner
 import random
 
 config = None
 fight_runner = None
+expedition_runner = None
 
 class Cron:
     def __init__(self, round=3):
@@ -67,36 +68,6 @@ def resupplyFleetsOfExpedition(fleets):
         
     go_back_to_home_port()
 
-@logged
-def expedition_start_command_set(fleets, expeditions):
-    clickWithResetMouse(Pattern("sortie.png").similar(0.60))
-    clickWithResetMouse("expedition.png")
-    waitVanish("expedition.png")
-
-    for fleet, expedition in zip(fleets, expeditions):
-        goExpedition(fleet, expedition)
-        
-    go_back_to_home_port()
-
-@logged
-def goExpedition(fleet, expedition):
-    clickWithResetMouse(expedition.getWorldImage())
-    
-    # if fleet is on expedition
-    if exists(fleet.getImage()):
-        return;
-    
-    clickWithResetMouse(expedition.getImage())
-	
-    if exists("stop_expedition.png"):
-        return
-    clickWithResetMouse("decision.png")
-    clickWithResetMouse(fleet.getNotSelectedImage())
-    if exists("status_on_expedition.png"):
-        return
-    clickWithResetMouse("expedition_start.png")
-    sleep(5)
-     
 @logged
 def click_expedition_report():
     isFleetBack = False
@@ -272,7 +243,7 @@ def resupplyAndGoExpedition():
         resupplyFleetsOfExpedition(config.expedition_fleets)
         is_back = click_expedition_report()
         
-    expedition_start_command_set(config.expedition_fleets, config.expeditions)
+    expedition_runner.run()
     return click_expedition_report()
 
 def dismantle_ship():
@@ -343,6 +314,7 @@ if __name__ == "__main__":
     config = Config(config_path)
     
     fight_runner = FightRunner()
+    expedition_runner = ExpeditionRunner(config.expedition_fleets, config.expeditions)
     
     mainloopWithException()
             
