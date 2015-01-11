@@ -14,6 +14,9 @@ class Config:
         self.sleep_time = parser.getint('system', 'WAIT_TIME_SECOND')
         # loading docker number for repairing
         self.docker_num = parser.getint('fleet', 'BATHROOM_NUM')
+		# loading fight enable setting
+        self.fight_enabled = parser.getboolean('fight', 'enable')
+		
         # loading expedition fleet and expedition number
         self.expedition_fleets = []
         self.expeditions = []

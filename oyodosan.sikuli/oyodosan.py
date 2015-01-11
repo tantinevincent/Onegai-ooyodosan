@@ -2,9 +2,12 @@ from expedition import Expedition
 from fleet import Fleet
 from quests import Quests
 from config import Config
+from fight_runner import FightRunner
+
 import random
 
 config = None
+fight_runner = None
 
 class Cron:
     def __init__(self, round=3):
@@ -17,7 +20,7 @@ class Cron:
             if (dctr_self.count-1) % dctr_self.round == 0:
                 return f(*args, **kwargs)
         return wrapped    
-
+        
 def logged(f):
     def wrapped(*args, **kwargs):
         print f.__name__ + " start"
@@ -231,23 +234,6 @@ def clickQuest(img):
         clickWithResetMouse(img)
         
 @logged
-def readReport(is_go_night_fight= False):  
-    while not exists("night_attack_or_stop_pursuit.png") and not exists("fight_report.png"):
-        sleep(5)
-
-    if not is_go_night_fight:
-        clickIfExistsWithResetMouse(Pattern("night_attack_or_stop_pursuit.png").targetOffset(-100,0))
-    else:
-        clickIfExistsWithResetMouse(Pattern("night_attack_or_stop_pursuit.png").targetOffset(105,-9))
-
-@logged
-def sendBackCommand(is_night_fight = False):
-    while not exists(Pattern("advance_or_retreat.png").targetOffset(102,-12),1):
-        click(Location(700,200))
-        
-    clickWithResetMouse(Pattern("advance_or_retreat.png").targetOffset(102,-12))
-
-@logged
 def check_fleet_status():    
     clickWithResetMouse("organize.png")
 
@@ -269,21 +255,6 @@ def check_fleet_status():
     resupplyFleet()
     go_back_to_home_port()
     return True
-
-@logged
-def goLevelUp():
-    clickWithResetMouse(Pattern("sortie.png").similar(0.60))
-    clickWithResetMouse("fight.png")
-    clickWithResetMouse(Pattern("worlds.png").targetOffset(4,5))
-    clickWithResetMouse(Pattern("world_3_maps.png").targetOffset(150,-70))
-    clickWithResetMouse("decision.png")
-    clickWithResetMouse("fight_start.png")
-    wait("compass.png",600)
-    clickWithResetMouse("compass.png")
-    wait("formations.png",600)
-    clickWithResetMouse(Pattern("formations.png").targetOffset(-143,-32))
-    readReport()
-    sendBackCommand()
 
 @logged
 def resupplyFleet():
@@ -315,7 +286,7 @@ def doAllJob(count):
     can_figit = check_fleet_status()    
     is_back = click_expedition_report()
     if can_figit:
-        goLevelUp()
+        fight_runner.run()
     # Get Resource
     is_back = click_expedition_report()
     bathroom_command_set()
@@ -370,6 +341,8 @@ if __name__ == "__main__":
     #config_path = sys.argv[0] + ".sikuli/../config.ini"   #Executing from sikuli IDE
     config_path = sys.argv[0] + "/../../config.ini"        #Executing from console
     config = Config(config_path)
+    
+    fight_runner = FightRunner()
     
     mainloopWithException()
             
