@@ -8,12 +8,14 @@ from return_fleet_checker import ReturnFleetChecker
 from resupply_runner import ResupplyRunner
 from fight_checker import FightChecker
 from composite_runner import CompositeRunner
+from docking_runner import DockingRunner
 
 import random
 
 config = None
 level_up_runner = None
 expedition_runner = None
+docking_runner = None
 
 class Cron:
     def __init__(self, round=3):
@@ -79,91 +81,6 @@ def click_expedition_report():
         clickWithResetMouse("next.png")
         isFleetBack = True
 
-######### BATH Related ###############################
-@logged
-def bathroom_command_set():
-    clickWithResetMouse("docking.png")
-    wait("base.png",20)
-    print('need_check_bathroom_next')
-    emptyBathroomNum = getEmptyBathroomNum()
-    if emptyBathroomNum == 0:
-        go_back_to_home_port()
-        return
-    
-    clickBathroom()
-    fleets = [Fleet(1)]
-    ships = get_need_repairing_ship_in_fleets(fleets)
-    
-    if emptyBathroomNum > 1:
-        otherShip = get_need_repairing_ship_not_in_fleets(fleets)
-        ships += [otherShip] if otherShip is not None else []
-        
-    for ship in ships:
-        click(ship)
-        success = confirmShipToBathroom()
-        if not success:
-            continue
-        if not hasBathroom():
-            break
-        clickBathroom()
-
-    go_back_to_home_port()    
-
-@logged
-def getEmptyBathroomNum():
-    return config.docker_num - len(safeFindAll("bucket.png"))
-@logged
-def hasBathroom():
-    return getEmptyBathroomNum() > 0
-
-@logged
-def clickBathroom():
-    clickWithResetMouse(Pattern("dock.png").targetOffset(-185,0))
-
-@logged
-def get_need_repairing_ship_in_fleets(fleets):
-    ships = []
-    for fleet in fleets:
-        for mark_img in fleet.getAllImages():
-            ships += safeFindAll(Pattern(mark_img).similar(0.85))
-
-    return filter(isNotRepairing, ships)
-
-@logged
-def get_need_repairing_ship_not_in_fleets(fleets):
-    base_location = find(Pattern("docking_titlebar.png").targetOffset(-40,0)).getTarget().below(20)
-    OFFSET_Y = 30
-    for i in xrange(0,3):
-        target = Region(base_location.getX()-200, base_location.getY()+OFFSET_Y*i-10, 500, 40)
-        if not is_in_fleets(target, fleets) and not target.exists("in_repairing.png"):
-            return target.getCenter()
-
-def is_in_fleets(target, fleets):
-    for fleet in fleets:
-        for mark_img in fleet.getAllImages():
-            if target.exists(Pattern(mark_img).similar(0.85)):
-                return True
-    return False
-
-@logged
-def returnShipList():
-    find("base.png").right(50).click()
-
-@logged
-def confirmShipToBathroom():
-    clickWithResetMouse("docking_start.png")
-    if not exists("ok.png"):
-        returnShipList()
-        return False
-    
-    clickWithResetMouse("ok.png")
-    waitVanish("ok.png")
-    return True
-
-@logged
-def isNotRepairing(ship):
-    return not ship.right().exists("in_repairing.png")
-
 @Cron(round = 5)
 @logged
 def setQuest():
@@ -199,23 +116,14 @@ def clickQuest(img):
     if exists(img,1) and not find(img).right().exists("quest_activating.png"):
         clickWithResetMouse(img)
         
-def dismantle_ship():
-    clickWithResetMouse("factory.png")
-    clickWithResetMouse("dismantle.png")
-    
 @logged
 def doAllJob(count):
     # Level UP
     level_up_runner.run()
     # Get Resource
-    is_back = click_expedition_report()
-    bathroom_command_set()
+    docking_runner.run()
     click_expedition_report()
     setQuest()           
-    #click_expedition_report()
-    #is_back = True
-    #while is_back:
-    #   is_back = resupplyAndGoExpedition()
     expedition_runner.run()      
     #click_expedition_report()
     reset_mouse()
@@ -263,17 +171,24 @@ if __name__ == "__main__":
     config = Config(config_path)
     
     return_fleet_checker = ReturnFleetChecker()
+    fight_fleets = [Fleet(1)]
     
     level_up_runner = CompositeRunner()
     level_up_runner.add_runner(return_fleet_checker)
     level_up_runner.add_runner(FightChecker())
-    level_up_runner.add_runner(ResupplyRunner([Fleet(1)], from_small_resuppy=True))
+    level_up_runner.add_runner(ResupplyRunner(fight_fleets, from_small_resuppy=True))
     level_up_runner.add_runner(return_fleet_checker)
     level_up_runner.add_runner(FightRunner())
     
     expedition_runner = CompositeRunner()
+    expedition_runner.add_runner(return_fleet_checker)
     expedition_runner.add_runner(ResupplyRunner(config.expedition_fleets))
+    expedition_runner.add_runner(return_fleet_checker)
     expedition_runner.add_runner(ExpeditionRunner(config.expedition_fleets, config.expeditions))
+    
+    docking_runner = CompositeRunner()
+    docking_runner.add_runner(return_fleet_checker)
+    docking_runner.add_runner(DockingRunner(config.docker_num, fight_fleets))
     
     mainloopWithException()
             
