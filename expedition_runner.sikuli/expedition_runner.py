@@ -18,7 +18,8 @@ class ExpeditionRunner(Common):
         for fleet, expedition in zip(self.fleets, self.expeditions):
             self.__go_expedition(fleet, expedition)
             
-        self.back_home_port()    
+        self.back_home_port()
+        return True
     
     @logged
     def __go_expedition(self, fleet, expedition):

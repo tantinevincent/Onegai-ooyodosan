@@ -16,6 +16,7 @@ class FightRunner(Common):
         self.clickWithResetMouse(Pattern("formations.png").targetOffset(-143,-32))
         self.__read_report()
         self.__send_retreat_command()
+        return True
         
     @logged    
     def __read_report(self):  

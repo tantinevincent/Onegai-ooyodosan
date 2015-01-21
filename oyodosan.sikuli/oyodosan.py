@@ -4,10 +4,15 @@ from quests import Quests
 from config import Config
 from fight_runner import FightRunner
 from expedition_runner import ExpeditionRunner
+from return_fleet_checker import ReturnFleetChecker
+from resupply_runner import ResupplyRunner
+from fight_checker import FightChecker
+from composite_runner import CompositeRunner
+
 import random
 
 config = None
-fight_runner = None
+level_up_runner = None
 expedition_runner = None
 
 class Cron:
@@ -58,16 +63,6 @@ def reset_mouse():
 def go_back_to_home_port():
     clickWithResetMouse("base.png")
     
-@logged
-def resupplyFleetsOfExpedition(fleets):
-    clickWithResetMouse("supply.png")
-    for fleet in fleets:
-        clickWithResetMouse(fleet.getNotSelectedImage())
-        if not exists("status_on_expedition.png"):
-            resupplyFleet()
-        
-    go_back_to_home_port()
-
 @logged
 def click_expedition_report():
     isFleetBack = False
@@ -204,48 +199,6 @@ def clickQuest(img):
     if exists(img,1) and not find(img).right().exists("quest_activating.png"):
         clickWithResetMouse(img)
         
-@logged
-def check_fleet_status():    
-    clickWithResetMouse("organize.png")
-
-    # Check Tired
-    clickWithResetMouse("replenishment.png")
-    clickWithResetMouse(Pattern("mamiya.png").targetOffset(22,-10))
-    if exists("mamiya_prompt.png"):
-        clickIfExistsWithResetMouse(Pattern("mamiya_prompt.png").targetOffset(14,89))
-        go_back_to_home_port()
-        return False
-    clickWithResetMouse(Pattern("replenishment_selection.png").targetOffset(241,37))
-    # Check Damega
-    for damage_img in ["status_repair_damage.png","status_minor_damage.png","status_moderate_damage.png","status_heavily_damage.png"]:
-        if exists(damage_img):
-            go_back_to_home_port()
-            return False
-        
-    clickWithResetMouse("supply_small.png")
-    resupplyFleet()
-    go_back_to_home_port()
-    return True
-
-@logged
-def resupplyFleet():
-    location = find(Pattern("resupply_fleet_marks.png").targetOffset(-71,2)).getTarget()
-    OFFSET_Y = 50
-    for i in xrange(1,7):
-        click(location.below(OFFSET_Y*i)) #click all resupply check box
-    clickWithResetMouse("resupply_everything.png")
-    sleep(3)
-
-@logged
-def resupplyAndGoExpedition():
-    is_back = True
-    while is_back:
-        resupplyFleetsOfExpedition(config.expedition_fleets)
-        is_back = click_expedition_report()
-        
-    expedition_runner.run()
-    return click_expedition_report()
-
 def dismantle_ship():
     clickWithResetMouse("factory.png")
     clickWithResetMouse("dismantle.png")
@@ -253,21 +206,17 @@ def dismantle_ship():
 @logged
 def doAllJob(count):
     # Level UP
-    is_back = click_expedition_report()   
-    can_figit = check_fleet_status()    
-    is_back = click_expedition_report()
-    if can_figit:
-        fight_runner.run()
+    level_up_runner.run()
     # Get Resource
     is_back = click_expedition_report()
     bathroom_command_set()
     click_expedition_report()
     setQuest()           
-    click_expedition_report()
-    is_back = True
-    while is_back:
-        is_back = resupplyAndGoExpedition()
-          
+    #click_expedition_report()
+    #is_back = True
+    #while is_back:
+    #   is_back = resupplyAndGoExpedition()
+    expedition_runner.run()      
     #click_expedition_report()
     reset_mouse()
 
@@ -313,8 +262,18 @@ if __name__ == "__main__":
     config_path = sys.argv[0] + "/../../config.ini"        #Executing from console
     config = Config(config_path)
     
-    fight_runner = FightRunner()
-    expedition_runner = ExpeditionRunner(config.expedition_fleets, config.expeditions)
+    return_fleet_checker = ReturnFleetChecker()
+    
+    level_up_runner = CompositeRunner()
+    level_up_runner.add_runner(return_fleet_checker)
+    level_up_runner.add_runner(FightChecker())
+    level_up_runner.add_runner(ResupplyRunner([Fleet(1)], from_small_resuppy=True))
+    level_up_runner.add_runner(return_fleet_checker)
+    level_up_runner.add_runner(FightRunner())
+    
+    expedition_runner = CompositeRunner()
+    expedition_runner.add_runner(ResupplyRunner(config.expedition_fleets))
+    expedition_runner.add_runner(ExpeditionRunner(config.expedition_fleets, config.expeditions))
     
     mainloopWithException()
             
