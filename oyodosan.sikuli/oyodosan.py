@@ -9,6 +9,9 @@ from resupply_runner import ResupplyRunner
 from fight_checker import FightChecker
 from composite_runner import CompositeRunner
 from docking_runner import DockingRunner
+from quest_runner import QuestRunner
+from cron import Cron
+from dismantling_runner import DismantlingRunner
 
 import random
 
@@ -16,38 +19,13 @@ config = None
 level_up_runner = None
 expedition_runner = None
 docking_runner = None
+questing_runner = None
 
-class Cron:
-    def __init__(self, round=3):
-        self.round = round
-        self.count = 0
-    def __call__(self, f):
-        dctr_self = self
-        def wrapped(*args, **kwargs):
-            dctr_self.count += 1
-            if (dctr_self.count-1) % dctr_self.round == 0:
-                return f(*args, **kwargs)
-        return wrapped    
-        
 def logged(f):
     def wrapped(*args, **kwargs):
         print f.__name__ + " start"
         return f(*args, **kwargs)
     return wrapped 
-
-def safeFindAll(target):
-    try:
-        result = [x for x in findAll(target)]
-    except FindFailed:
-        result = []
-    return result
-
-def safeFind(target):
-    try:
-        result = [find(target)]
-    except FindFailed:
-        result = []
-    return result
 
 def clickWithResetMouse(img):
     wait(img,30)
@@ -60,72 +38,17 @@ def clickIfExistsWithResetMouse(img):
        
 def reset_mouse():
     hover(Location(0,0))
-
-@logged    
-def go_back_to_home_port():
-    clickWithResetMouse("base.png")
     
-@logged
-def click_expedition_report():
-    isFleetBack = False
-    while( True ):
-        print('ready check report')
-        wait(Pattern("sortie.png").similar(0.60),60)
-        if not exists("expedition_fleet_back_message.png"):
-            return isFleetBack;
-        
-        clickWithResetMouse("expedition_fleet_back_message.png")
-        print('click next')
-        wait("next.png", 20);
-        clickWithResetMouse("next.png")
-        clickWithResetMouse("next.png")
-        isFleetBack = True
-
-@Cron(round = 5)
-@logged
-def setQuest():
-    clickWithResetMouse("quest.png")
-    clickWithResetMouse("oyodo.png")
-    
-    while True:
-        while exists("quest_success.png"):
-            clickWithResetMouse("quest_success.png")
-            
-            while exists("close.png"):
-                clickWithResetMouse("close.png")
-
-        sleep(2)
-        for quests in config.quests_list:
-            quest_type = quests.getTypeImage()
-            print "find " + quest_type
-            if not exists(Pattern(quest_type).similar(0.85)):
-                continue
-            for quest_img in quests.getAllImages():
-                print "find " + quest_img
-                clickQuest(Pattern(quest_img).similar(0.90))
-        
-        if not exists("quest_next_page.png"):
-            break
-           
-        clickWithResetMouse("quest_next_page.png")
-        
-    clickWithResetMouse("back.png")
-
-@logged
-def clickQuest(img):
-    if exists(img,1) and not find(img).right().exists("quest_activating.png"):
-        clickWithResetMouse(img)
-        
 @logged
 def doAllJob(count):
     # Level UP
     level_up_runner.run()
-    # Get Resource
+    # Docking
     docking_runner.run()
-    click_expedition_report()
-    setQuest()           
-    expedition_runner.run()      
-    #click_expedition_report()
+    # Fleet expedition
+    expedition_runner.run()    
+    # Quest check
+    questing_runner.run()    
     reset_mouse()
 
 @logged
@@ -189,6 +112,16 @@ if __name__ == "__main__":
     docking_runner = CompositeRunner()
     docking_runner.add_runner(return_fleet_checker)
     docking_runner.add_runner(DockingRunner(config.docker_num, fight_fleets))
+    
+    questing_runner = CompositeRunner()
+    questing_runner.add_runner(Cron(5))
+    questing_runner.add_runner(return_fleet_checker)
+    questing_runner.add_runner(QuestRunner(config.quests_list))
+    
+    #dismantling_runner = CompositeRunner()
+    #dismantling_runner.add_runner(Cron(30))
+    #dismantling_runner.add_runner(return_fleet_checker)
+    #dismantling_runner.add_runner(DismantlingRunner())
     
     mainloopWithException()
             
