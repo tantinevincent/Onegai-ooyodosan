@@ -34,5 +34,5 @@ class FightChecker(Common):
         return False
      
 if __name__ == "__main__":
-    checker = FightChecker(None)
+    checker = FightChecker()
     checker.run()

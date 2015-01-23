@@ -1,6 +1,8 @@
+Onegai-oyodosan (おねがい！大淀さん)
+
 [![Build Status](https://travis-ci.org/tantinevincent/Onegai-oyodosan.svg?branch=master)](https://travis-ci.org/tantinevincent/Onegai-oyodosan)
 [![Coverage Status](https://img.shields.io/coveralls/tantinevincent/Onegai-oyodosan.svg)](https://coveralls.io/r/tantinevincent/Onegai-oyodosan?branch=master)
-Onegai-oyodosan (おねがい！大淀さん)
+[![Codacy Badge](https://www.codacy.com/project/badge/79165fe63b704e4fbd85dbc497e87484)](https://www.codacy.com/public/tantinevincent/Onegai-oyodosan)
 ===============
 
 This is an automation tool about Kancolle.
