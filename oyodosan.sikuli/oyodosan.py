@@ -12,6 +12,7 @@ from docking_runner import DockingRunner
 from quest_runner import QuestRunner
 from cron import Cron
 from dismantling_runner import DismantlingRunner
+from enable_runner import EnableRunner
 
 import random
 
@@ -97,6 +98,7 @@ if __name__ == "__main__":
     fight_fleets = [Fleet(1)]
     
     level_up_runner = CompositeRunner()
+    level_up_runner.add_runner(EnableRunner(config.fight_enabled))
     level_up_runner.add_runner(return_fleet_checker)
     level_up_runner.add_runner(FightChecker())
     level_up_runner.add_runner(ResupplyRunner(fight_fleets, from_small_resuppy=True))
