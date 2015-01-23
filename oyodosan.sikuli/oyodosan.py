@@ -95,13 +95,12 @@ if __name__ == "__main__":
     config = Config(config_path)
     
     return_fleet_checker = ReturnFleetChecker()
-    fight_fleets = [Fleet(1)]
     
     level_up_runner = CompositeRunner()
     level_up_runner.add_runner(EnableRunner(config.fight_enabled))
     level_up_runner.add_runner(return_fleet_checker)
     level_up_runner.add_runner(FightChecker())
-    level_up_runner.add_runner(ResupplyRunner(fight_fleets, from_small_resuppy=True))
+    level_up_runner.add_runner(ResupplyRunner(config.fight_fleets, from_small_resuppy=True))
     level_up_runner.add_runner(return_fleet_checker)
     level_up_runner.add_runner(FightRunner())
     
@@ -113,7 +112,7 @@ if __name__ == "__main__":
     
     docking_runner = CompositeRunner()
     docking_runner.add_runner(return_fleet_checker)
-    docking_runner.add_runner(DockingRunner(config.docker_num, fight_fleets))
+    docking_runner.add_runner(DockingRunner(config.docker_num, config.fight_fleets))
     
     questing_runner = CompositeRunner()
     questing_runner.add_runner(Cron(5))
