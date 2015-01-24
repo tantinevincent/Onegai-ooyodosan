@@ -10,5 +10,5 @@ class EnableRunner(Common):
         return self.enabled
    
 if __name__ == "__main__":
-    runner = EnableRunner()
-    runner.run()
+    runner = EnableRunner(True)
+    print runner.run()
