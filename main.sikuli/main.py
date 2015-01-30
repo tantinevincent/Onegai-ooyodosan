@@ -13,6 +13,7 @@ from quest_runner import QuestRunner
 from cron import Cron
 from dismantling_runner import DismantlingRunner
 from enable_runner import EnableRunner
+from while_runner import WhileRunner
 
 import random
 
@@ -104,25 +105,28 @@ if __name__ == "__main__":
     level_up_runner.add_runner(return_fleet_checker)
     level_up_runner.add_runner(FightRunner())
     
-    expedition_runner = CompositeRunner()
-    expedition_runner.add_runner(return_fleet_checker)
-    expedition_runner.add_runner(ResupplyRunner(config.expedition_fleets))
-    expedition_runner.add_runner(return_fleet_checker)
-    expedition_runner.add_runner(ExpeditionRunner(config.expedition_fleets, config.expeditions))
-    
     docking_runner = CompositeRunner()
     docking_runner.add_runner(return_fleet_checker)
     docking_runner.add_runner(DockingRunner(config.docker_num, config.fight_fleets))
+    
+    resupply_runner = CompositeRunner()
+    resupply_runner.add_runner(return_fleet_checker)
+    resupply_runner.add_runner(ResupplyRunner(config.expedition_fleets))
+    
+    expedition_runner = CompositeRunner()
+    expedition_runner.add_runner(resupply_runner)
+    expedition_runner.add_runner(WhileRunner("return_fleet_message.png", resupply_runner))
+    expedition_runner.add_runner(ExpeditionRunner(config.expedition_fleets, config.expeditions))
     
     questing_runner = CompositeRunner()
     questing_runner.add_runner(Cron(5))
     questing_runner.add_runner(return_fleet_checker)
     questing_runner.add_runner(QuestRunner(config.quests_list))
     
-    #dismantling_runner = CompositeRunner()
-    #dismantling_runner.add_runner(Cron(30))
-    #dismantling_runner.add_runner(return_fleet_checker)
-    #dismantling_runner.add_runner(DismantlingRunner())
+    dismantling_runner = CompositeRunner()
+    dismantling_runner.add_runner(Cron(30))
+    dismantling_runner.add_runner(return_fleet_checker)
+    dismantling_runner.add_runner(DismantlingRunner())
     
     mainloopWithException()
             

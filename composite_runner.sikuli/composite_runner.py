@@ -15,3 +15,5 @@ class CompositeRunner():
             still_running = runner.run()
             if not still_running:
                 break
+                
+        return True
