@@ -14,9 +14,11 @@ class Config:
         self.sleep_time = parser.getint('system', 'WAIT_TIME_SECOND')
         # loading docker number for repairing
         self.docker_num = parser.getint('fleet', 'BATHROOM_NUM')
-		# loading fight enable setting
+        
+		# loading enable setting
         self.fight_enabled = parser.getboolean('enable', 'fight')
-		
+		self.dismantling_enabled = parser.getboolean('enable', 'dismantling')
+        
         # loading fight fleet
         self.fight_fleets = []
         for fleet_num, fight_world in self.__get_section_dict(parser, "fight").items():

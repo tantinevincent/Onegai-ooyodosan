@@ -22,6 +22,7 @@ level_up_runner = None
 expedition_runner = None
 docking_runner = None
 questing_runner = None
+dismantling_runner = None
 
 def logged(f):
     def wrapped(*args, **kwargs):
@@ -50,7 +51,9 @@ def doAllJob(count):
     # Fleet expedition
     expedition_runner.run()    
     # Quest check
-    questing_runner.run()    
+    questing_runner.run()  
+    # Dismantling
+    dismantling_runner.run()
     reset_mouse()
 
 @logged
@@ -124,6 +127,7 @@ if __name__ == "__main__":
     questing_runner.add_runner(QuestRunner(config.quests_list))
     
     dismantling_runner = CompositeRunner()
+    dismantling_runner.add_runner(EnableRunner(config.dismantling_enabled))
     dismantling_runner.add_runner(Cron(30))
     dismantling_runner.add_runner(return_fleet_checker)
     dismantling_runner.add_runner(DismantlingRunner())

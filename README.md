@@ -14,6 +14,7 @@
   - Auto level up (3-2-1 only)
   - Auto activate the quest (not all yet)
   - Auto docking
+  - Auto dismantling
   
 ##Required
   - Open all fleets
