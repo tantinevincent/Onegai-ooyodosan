@@ -110,7 +110,7 @@ if __name__ == "__main__":
     
     docking_runner = CompositeRunner()
     docking_runner.add_runner(return_fleet_checker)
-    docking_runner.add_runner(DockingRunner(config.docker_num, config.fight_fleets))
+    docking_runner.add_runner(DockingRunner(config.docker_num, config.fight_fleets, is_fight=config.fight_enabled))
     
     resupply_runner = CompositeRunner()
     resupply_runner.add_runner(return_fleet_checker)
