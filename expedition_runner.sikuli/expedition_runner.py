@@ -25,10 +25,6 @@ class ExpeditionRunner(Common):
     def __go_expedition(self, fleet, expedition):
     
         self.clickWithResetMouse(expedition.getWorldImage())
-        # if fleet is on expedition
-        if exists(fleet.getImage()):
-            return;
-    
         self.clickWithResetMouse(expedition.getImage())
 	
         if exists("stop_expedition.png"):
