@@ -69,17 +69,10 @@ class DockingRunner(Common):
     def __get_not_in_fleets_ships(self):
         base_location = find(Pattern("docking_titlebar.png").targetOffset(-40,0)).getTarget().below(20)
         OFFSET_Y = 30
-        ships = []
-        for i in xrange(0,9):
+        for i in xrange(0,self.docker_num):
             target = Region(base_location.getX()-200, base_location.getY()+OFFSET_Y*i-10, 500, 40)
-            if target.exists("in_repairing.png"):
-                continue
-                
-            ships.append(target.getCenter())
-            if len(ships) >= self.docker_num:
-                break
-
-        return ships 
+            if not target.exists("in_repairing.png"):
+                return [target.getCenter()] 
                 
     @logged
     def __confirm_docking(self):
@@ -99,3 +92,4 @@ class DockingRunner(Common):
 if __name__ == "__main__":
     runner = DockingRunner(2, [Fleet(1)], False)
     runner.run()
+    
