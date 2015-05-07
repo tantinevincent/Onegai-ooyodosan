@@ -64,7 +64,7 @@ def mainloopWithException():
             print(count)
             switchApp(config.browser)
             doAllJob(count)
-            random_sleep_time = random.randrange(int(config.sleep_time*0.9), int(config.sleep_time*1.1))
+            random_sleep_time = random.randrange(int(config.sleep_time*0.9), int(config.sleep_time*1.1))  # sleeping with random offset time
             print "sleep " + str(random_sleep_time) + " sec..."
             sleep(random_sleep_time)
             count += 1
@@ -100,6 +100,7 @@ if __name__ == "__main__":
     
     return_fleet_checker = ReturnFleetChecker()
     
+    # Level up first fleet
     level_up_runner = CompositeRunner()
     level_up_runner.add_runner(EnableRunner(config.fight_enabled))
     level_up_runner.add_runner(return_fleet_checker)
@@ -108,24 +109,33 @@ if __name__ == "__main__":
     level_up_runner.add_runner(return_fleet_checker)
     level_up_runner.add_runner(FightRunner())
     
+    # Repair ships
     docking_runner = CompositeRunner()
+    docking_runner.add_runner(EnableRunner(config.docking_enabled))
     docking_runner.add_runner(return_fleet_checker)
     docking_runner.add_runner(DockingRunner(config.docker_num, config.fight_fleets, is_fight=config.fight_enabled))
     
+    # resupply exception fleets
     resupply_runner = CompositeRunner()
+    resupply_runner.add_runner(EnableRunner(config.exception_enabled))
     resupply_runner.add_runner(return_fleet_checker)
     resupply_runner.add_runner(ResupplyRunner(config.expedition_fleets))
     
+    # go exception
     expedition_runner = CompositeRunner()
+    expedition_runner.add_runner(EnableRunner(config.exception_enabled))
     expedition_runner.add_runner(resupply_runner)
     expedition_runner.add_runner(WhileRunner("return_fleet_message.png", resupply_runner))
     expedition_runner.add_runner(ExpeditionRunner(config.expedition_fleets, config.expeditions))
     
+    # active quests
     questing_runner = CompositeRunner()
+    questing_runner.add_runner(EnableRunner(config.quest_enabled))
     questing_runner.add_runner(Cron(5))
     questing_runner.add_runner(return_fleet_checker)
     questing_runner.add_runner(QuestRunner(config.quests_list))
     
+    # dismantling ships
     dismantling_runner = CompositeRunner()
     dismantling_runner.add_runner(EnableRunner(config.dismantling_enabled))
     dismantling_runner.add_runner(Cron(30))

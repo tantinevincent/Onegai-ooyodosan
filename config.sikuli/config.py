@@ -18,6 +18,9 @@ class Config:
 		# loading enable setting
         self.fight_enabled = parser.getboolean('enable', 'fight')
         self.dismantling_enabled = parser.getboolean('enable', 'dismantling')
+        self.quest_enabled = parser.getboolean('enable', 'quest')
+        self.exception_enabled = parser.getboolean('enable', 'exception')
+        self.docking_enabled = parser.getboolean('enable', 'docking')
         
         # loading fight fleet
         self.fight_fleets = []
