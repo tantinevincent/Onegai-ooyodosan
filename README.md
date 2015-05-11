@@ -1,5 +1,5 @@
 #Onegai-ooyodosan (おねがい！大淀さん)
-[![Build Status](https://travis-ci.org/tantinevincent/Onegai-ooyodosan.svg?branch=master)](https://travis-ci.org/tantinevincent/Onegai-oyodosan)
+[![Build Status](https://travis-ci.org/tantinevincent/Onegai-ooyodosan.svg?branch=master)](https://travis-ci.org/tantinevincent/Onegai-ooyodosan)
 [![Coverage Status](https://img.shields.io/coveralls/tantinevincent/Onegai-oyodosan.svg)](https://coveralls.io/r/tantinevincent/Onegai-oyodosan?branch=master)
 [![Codacy Badge](https://www.codacy.com/project/badge/79165fe63b704e4fbd85dbc497e87484)](https://www.codacy.com/public/tantinevincent/Onegai-oyodosan)
 
