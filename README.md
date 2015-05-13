@@ -2,8 +2,10 @@
 [![Build Status](https://travis-ci.org/tantinevincent/Onegai-ooyodosan.svg?branch=master)](https://travis-ci.org/tantinevincent/Onegai-ooyodosan)
 
 ##Usage
-  - Download [Sikuli]
-  - Execute sikuli-setup.jar
+  - Download [sikuli-setup.jar] 
+  - Execute sikuli-setup.jar and choose Pack 2
+  - Clone this repository
+  - Open config.ini and modify the settings
   - Prepare your browser and log in kantai collection
   - Execute main.sikuli(Example: java -jar sikuli-script.jar -r /your/path/main.sikuli)
 
@@ -18,4 +20,4 @@
   - Open all fleets
   - Reach to 3-2
 
-[sikuli]:http://www.sikuli.org/
+[sikuli-setup.jar]:https://launchpad.net/sikuli/+download
