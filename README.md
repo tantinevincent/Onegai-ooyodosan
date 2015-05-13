@@ -1,4 +1,5 @@
 #Onegai-ooyodosan (おねがい！大淀さん)
+[![Build Status](https://travis-ci.org/tantinevincent/Onegai-ooyodosan.svg?branch=master)](https://travis-ci.org/tantinevincent/Onegai-ooyodosan)
 
 ##Usage
   - Download [Sikuli]
