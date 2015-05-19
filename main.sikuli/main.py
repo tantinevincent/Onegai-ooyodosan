@@ -117,13 +117,13 @@ if __name__ == "__main__":
     
     # resupply exception fleets
     resupply_runner = CompositeRunner()
-    resupply_runner.add_runner(EnableRunner(config.exception_enabled))
+    resupply_runner.add_runner(EnableRunner(config.expedition_enabled))
     resupply_runner.add_runner(return_fleet_checker)
     resupply_runner.add_runner(ResupplyRunner(config.expedition_fleets))
     
     # go exception
     expedition_runner = CompositeRunner()
-    expedition_runner.add_runner(EnableRunner(config.exception_enabled))
+    expedition_runner.add_runner(EnableRunner(config.expedition_enabled))
     expedition_runner.add_runner(resupply_runner)
     expedition_runner.add_runner(WhileRunner("return_fleet_message.png", resupply_runner))
     expedition_runner.add_runner(ExpeditionRunner(config.expedition_fleets, config.expeditions))
