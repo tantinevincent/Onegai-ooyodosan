@@ -13,9 +13,10 @@ class FightRunner(Common):
         wait("compass.png",600)
         self.clickWithResetMouse("compass.png")
         wait("formations.png",600)
+        location = self.getLocation("formations.png")
         self.clickWithResetMouse(Pattern("formations.png").targetOffset(-143,-32))
         self.__read_report()
-        self.__send_retreat_command()
+        self.__send_retreat_command(location)
         return True
         
     @logged    
@@ -30,9 +31,9 @@ class FightRunner(Common):
         #    clickIfExistsWithResetMouse(Pattern("night_attack_or_stop_pursuit.png").targetOffset(105,-9))
         
     @logged    
-    def __send_retreat_command(self):
+    def __send_retreat_command(self, location):
         while not exists("advance_or_retreat.png"):
-            click(Location(700,200))
+            click(location)
         
         self.clickWithResetMouse(Pattern("advance_or_retreat.png").targetOffset(102,-12))
      

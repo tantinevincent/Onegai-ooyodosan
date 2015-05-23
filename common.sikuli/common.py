@@ -1,4 +1,5 @@
 from sikuli import *
+from random import uniform
 
 def logged(f):
     def wrapped(*args, **kwargs):
@@ -25,11 +26,15 @@ class Common:
         wait(img,30)
         click(img)
         self.reset_mouse()
+        sleep(uniform(0,0.5))
 
     def clickIfExistsWithResetMouse(self, img):
         if exists(img,1):
             self.clickWithResetMouse(img)
-       
+    
+    def getLocation(self, img): 
+        return find(img).getCenter()
+    
     def reset_mouse(self):
         hover(Location(0,0))
         
