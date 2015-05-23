@@ -119,7 +119,7 @@ if __name__ == "__main__":
     resupply_runner = CompositeRunner()
     resupply_runner.add_runner(EnableRunner(config.expedition_enabled))
     resupply_runner.add_runner(return_fleet_checker)
-    resupply_runner.add_runner(ResupplyRunner(config.expedition_fleets))
+    resupply_runner.add_runner(ResupplyRunner(config.expedition_fleets, enable_expedition_check=True))
     
     # go exception
     expedition_runner = CompositeRunner()
