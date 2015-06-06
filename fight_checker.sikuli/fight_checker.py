@@ -8,7 +8,7 @@ class FightChecker(Common):
         
     @logged
     def run(self):
-        self.clickWithResetMouse("organize.png")
+        self.clickWithRandomLocationAndResetMouse("organize.png")
         if self.__is_fleet_tired() or self.__is_fleet_damaged():
             self.back_home_port()
             return False
@@ -17,13 +17,13 @@ class FightChecker(Common):
         
     @logged
     def __is_fleet_tired(self):
-        self.clickWithResetMouse("replenishment.png")
-        self.clickWithResetMouse(Pattern("mamiya.png").targetOffset(22,-10))
+        self.clickWithRandomLocationAndResetMouse("replenishment.png", x_offset_base=3, y_offset_base=3)
+        self.clickWithRandomOffset(Pattern("mamiya.png").targetOffset(22,-10))
         if exists("mamiya_prompt.png"):
-            self.clickWithResetMouse(Pattern("mamiya_prompt.png").targetOffset(14,89))
+            self.clickWithRandomOffset(Pattern("mamiya_prompt.png").targetOffset(14,89))
             return True
             
-        self.clickWithResetMouse(Pattern("replenishment_selection.png").targetOffset(241,37))
+        self.clickWithRandomOffset(Pattern("replenishment_selection.png").targetOffset(241,37))
         return False
         
     @logged

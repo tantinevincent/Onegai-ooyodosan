@@ -20,9 +20,9 @@ class ResupplyRunner(Common):
         else:
             supply_btn = "supply_small.png"
         
-        self.clickWithResetMouse(supply_btn)
+        self.clickWithRandomLocationAndResetMouse(supply_btn)
         for fleet in self.fleets:
-            self.clickWithResetMouse(fleet.getNotSelectedImage())
+            self.clickWithRandomOffset(fleet.getNotSelectedImage())
             if self.__need_resupply():
                 self.__resupply_fleet()
         
@@ -34,11 +34,18 @@ class ResupplyRunner(Common):
     
     @logged
     def __resupply_fleet(self):
-        location = find(Pattern("resupply_fleet_marks.png").targetOffset(-71,2)).getTarget()
-        OFFSET_Y = 50
-        for i in xrange(1,7):
-            click(location.below(OFFSET_Y*i)) #click all resupply check box
-        self.clickWithResetMouse("resupply_everything.png")
+        resupply_all_checkbox = find(Pattern("resupply_fleet_marks.png")).find("checkbox.png")
+        # Because sometime resupply all is not work, change to click each checkbox with ship
+        checkboxs = self.safeFindAll(Pattern("checkbox.png").similar(0.80), resupply_all_checkbox.below())
+        
+        if len(checkboxs) == 0:
+            return
+        
+        # sort checkbox list by axis y
+        for checkbox in sorted(checkboxs, key=lambda c: c.getTarget().getY()):
+            self.clickWithRandomOffset(checkbox.getTarget(), is_reset_mouse=False)
+        
+        self.clickWithRandomLocationAndResetMouse("resupply_everything.png")
         sleep(3)
     
 if __name__ == "__main__":
