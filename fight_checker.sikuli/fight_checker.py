@@ -17,7 +17,7 @@ class FightChecker(Common):
         
     @logged
     def __is_fleet_tired(self):
-        self.clickWithRandomLocationAndResetMouse("replenishment.png", x_offset_base=3, y_offset_base=3)
+        self.clickWithRandomOffset("replenishment.png", x_offset_base=3, y_offset_base=3)
         self.clickWithRandomOffset(Pattern("mamiya.png").targetOffset(22,-10))
         if exists("mamiya_prompt.png"):
             self.clickWithRandomOffset(Pattern("mamiya_prompt.png").targetOffset(14,89))

@@ -33,7 +33,7 @@ class Common:
 
     def clickWithRandomLocationAndResetMouse(self, img):
         match = wait(img,30)
-        sleep(uniform(0,0.1))
+        sleep(uniform(0,0.5))
         x = randint(match.getX(), match.getX()+match.getW())
         y = randint(match.getY(), match.getY()+match.getH())
         #hover(Location(x,y))
@@ -50,7 +50,7 @@ class Common:
             x = img.getX() + randint(-x_offset_base, x_offset_base)
             y = img.getY() + randint(-y_offset_base, y_offset_base)
         
-        sleep(uniform(0,0.1))
+        sleep(uniform(0,0.5))
         click(Location(x,y))
         if is_reset_mouse:
             self.reset_mouse()
