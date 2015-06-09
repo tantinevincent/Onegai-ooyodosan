@@ -9,15 +9,17 @@ class QuestRunner(Common):
         
     @logged
     def run(self):
-        self.clickWithResetMouse("quest.png")
-        self.clickWithResetMouse("oyodo.png")
+        self.clickWithRandomLocationAndResetMouse("quest.png")
+        while exists("oyodo.png"):
+            self.clickWithRandomLocationAndResetMouse("oyodo.png")
+            sleep(1)
         
         while True:
             self.__check_quest_page()
             if not exists("quest_next_page.png"):
                 break    
             
-            self.clickWithResetMouse("quest_next_page.png")
+            self.clickWithRandomOffset("quest_next_page.png", x_offset_base=3, y_offset_base=2)
             
         self.back_home_port()  
         return True
@@ -41,17 +43,17 @@ class QuestRunner(Common):
             return 
     
         if not find(img).right().exists("quest_activating.png"):
-            self.clickWithResetMouse(img)
+            self.clickWithRandomLocationAndResetMouse(img)
     
     @logged
     def __recieve_reward(self):
-        self.clickWithResetMouse("quest_success.png")
+        self.clickWithRandomLocationAndResetMouse("quest_success.png")
         while exists("close.png"):
-            self.clickWithResetMouse("close.png")
+            self.clickWithRandomLocationAndResetMouse("close.png")
     
     @logged
     def back_home_port(self):
-        self.clickWithResetMouse("back.png")
+        self.clickWithRandomLocationAndResetMouse("back.png")
     
 if __name__ == "__main__":
     config_path = sys.argv[0] + "/../../config.ini"        #Executing from console
