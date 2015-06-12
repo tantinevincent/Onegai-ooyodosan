@@ -67,7 +67,10 @@ class Common:
         
     def make_decision(self):
         self.clickWithRandomLocationAndResetMouse("decision.png")
-        
+    
+    def back_home_port_from_quest(self):
+        self.clickWithRandomLocationAndResetMouse("back.png")
+    
     def back_home_port(self):
         self.clickWithRandomLocationAndResetMouse("home_port.png")
         

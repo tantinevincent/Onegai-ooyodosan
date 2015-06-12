@@ -21,7 +21,7 @@ class QuestRunner(Common):
             
             self.clickWithRandomOffset("quest_next_page.png", x_offset_base=3, y_offset_base=2)
             
-        self.back_home_port()  
+        self.back_home_port_from_quest()  
         return True
      
     @logged
@@ -35,10 +35,10 @@ class QuestRunner(Common):
                 continue
         
             for quest_img in quests.getAllImages():
-                self.__click_quest(Pattern(quest_img).similar(0.90))
+                self._click_quest(Pattern(quest_img).similar(0.90))
     
     @logged
-    def __click_quest(self,img):
+    def _click_quest(self,img):
         if not exists(img):
             return 
     
@@ -50,13 +50,9 @@ class QuestRunner(Common):
         self.clickWithRandomLocationAndResetMouse("quest_success.png")
         while exists("close.png"):
             self.clickWithRandomLocationAndResetMouse("close.png")
-    
-    @logged
-    def back_home_port(self):
-        self.clickWithRandomLocationAndResetMouse("back.png")
-    
+
 if __name__ == "__main__":
     config_path = sys.argv[0] + "/../../config.ini"        #Executing from console
     config = Config(config_path)
     runner = QuestRunner(config.quests_list)
-    runner.run()
+    runner._click_quest()
