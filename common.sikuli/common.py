@@ -32,7 +32,11 @@ class Common:
         self.reset_mouse()
 
     def clickWithRandomLocationAndResetMouse(self, img):
-        match = wait(img,30)
+        if isinstance(img, Region) or isinstance(img, Match):
+            match = img
+        else:
+            match = wait(img,30)
+        
         sleep(uniform(0,0.5))
         x = randint(match.getX(), match.getX()+match.getW())
         y = randint(match.getY(), match.getY()+match.getH())
