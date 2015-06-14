@@ -37,13 +37,16 @@ class QuestRunner(Common):
             for quest_img in quests.getAllImages():
                 self._click_quest(Pattern(quest_img).similar(0.90))
     
-    @logged
-    def _click_quest(self,img):
-        if not exists(img):
+    def _click_quest(self, img):
+        match = exists(img)
+        if not match:
             return 
     
-        if not find(img).right().exists("quest_activating.png"):
-            self.clickWithRandomLocationAndResetMouse(img)
+        if match.right().exists("quest_activating.png"):
+            return
+        
+        region = Region(match.x + match.w, match.y, 60, 60)
+        self.clickWithRandomLocationAndResetMouse(region)
     
     @logged
     def __recieve_reward(self):
@@ -55,4 +58,4 @@ if __name__ == "__main__":
     config_path = sys.argv[0] + "/../../config.ini"        #Executing from console
     config = Config(config_path)
     runner = QuestRunner(config.quests_list)
-    runner._click_quest()
+    runner.run()
