@@ -11,8 +11,8 @@ class ExpeditionRunner(Common):
         
     @logged
     def run(self):
-        self.clickWithResetMouse(Pattern("sortie.png").similar(0.60))
-        self.clickWithResetMouse("expedition.png")
+        self.clickWithRandomLocationAndResetMouse(Pattern("sortie.png").similar(0.60))
+        self.clickWithRandomLocationAndResetMouse("expedition.png")
         waitVanish("expedition.png")
         
         for fleet, expedition in zip(self.fleets, self.expeditions):
@@ -24,15 +24,15 @@ class ExpeditionRunner(Common):
     @logged
     def __go_expedition(self, fleet, expedition):
     
-        self.clickWithResetMouse(expedition.getWorldImage())
-        self.clickWithResetMouse(expedition.getImage())
+        self.clickWithRandomLocationAndResetMouse(expedition.getWorldImage())
+        self.clickWithRandomLocationAndResetMouse(expedition.getImage())
 	
         if exists("stop_expedition.png"):
             return
             
         self.make_decision()
         self.clickWithResetMouse(fleet.getNotSelectedImage())
-        self.clickWithResetMouse("expedition_start.png")
+        self.clickWithRandomLocationAndResetMouse("expedition_start.png")
         sleep(5)
                 
 if __name__ == "__main__":

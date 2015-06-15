@@ -4,17 +4,18 @@ from sikuli import *
 class FightRunner(Common):
     @logged
     def run(self):
-        self.clickWithResetMouse(Pattern("sortie.png").similar(0.60))
-        self.clickWithResetMouse("fight.png")
-        self.clickWithResetMouse(Pattern("worlds.png").targetOffset(4,5))
-        self.clickWithResetMouse(Pattern("world_3_maps.png").targetOffset(150,-70))
+        self.clickWithRandomLocationAndResetMouse(Pattern("sortie.png").similar(0.60))
+        self.clickWithRandomLocationAndResetMouse("fight.png")
+        self.clickWithRandomOffset(Pattern("worlds.png").targetOffset(4,5))
+        #self.clickWithRandomOffset(Pattern("world_3_maps.png").targetOffset(150,-70))
+        self.clickWithRandomLocationAndResetMouse("map_3_3.png")
         self.make_decision()
-        self.clickWithResetMouse("fight_start.png")
+        self.clickWithRandomLocationAndResetMouse("fight_start.png")
         wait("compass.png",600)
-        self.clickWithResetMouse("compass.png")
+        self.clickWithRandomLocationAndResetMouse("compass.png")
         wait("formations.png",600)
         location = self.getLocation("formations.png")
-        self.clickWithResetMouse(Pattern("formations.png").targetOffset(-143,-32))
+        self.clickWithRandomOffset(Pattern("formations.png").targetOffset(-143,-32))
         self.__read_report()
         self.__send_retreat_command(location)
         return True
@@ -33,10 +34,11 @@ class FightRunner(Common):
     @logged    
     def __send_retreat_command(self, location):
         while not exists("advance_or_retreat.png"):
-            click(location)
+            self.clickWithRandomOffset(location, y_offset_base=20)
         
-        self.clickWithResetMouse(Pattern("advance_or_retreat.png").targetOffset(102,-12))
+        self.clickWithRandomOffset(Pattern("advance_or_retreat.png").targetOffset(102,-12))
      
 if __name__ == "__main__":
     fr = FightRunner()
     fr.run()
+    

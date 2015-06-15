@@ -86,12 +86,14 @@ def returnToBase():
 @logged
 def restartKancolle():
     isOnWelcomePage = False
+    wait_welcome_page_time = 20
     while not isOnWelcomePage:
         clickWithResetMouse(Pattern("reload.png").similar(0.80))
-        sleep(10)
+        sleep(wait_welcome_page_time)
+        wait_welcome_page_time = wait_welcome_page_time *2
         isOnWelcomePage = exists(Pattern("welcome_page.png").targetOffset(209,156))
     clickWithResetMouse(Pattern("welcome_page.png").targetOffset(209,156))
-    sleep(10)
+    sleep(wait_welcome_page_time)
 
 if __name__ == "__main__":
     #config_path = sys.argv[0] + ".sikuli/../config.ini"   #Executing from sikuli IDE

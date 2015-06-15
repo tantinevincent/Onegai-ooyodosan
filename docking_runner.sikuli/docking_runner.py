@@ -13,26 +13,27 @@ class DockingRunner(Common):
         
     @logged
     def run(self):
-        self.clickWithResetMouse("docking.png")
-        wait("base.png",20)
+        self.clickWithRandomLocationAndResetMouse("docking.png")
+        wait("base.png", 20)
         empty_dock_num = self.__get_empty_dock_num()
         if empty_dock_num == 0:
             self.back_home_port()  
             return True
         
-        self.__click_docker()
+        self._click_docker()
         # no fight fleet or empty dock more than one
         chonse_no_fight_ships_flag = (not self.is_fight) or (empty_dock_num > 1)
         ships = self.__list_repairing_candidate(self.is_fight, chonse_no_fight_ships_flag)
 
         for ship in ships:
-            click(ship)
+            print "click ship"
+            self.clickWithRandomOffset(ship, x_offset_base=50, y_offset_base=8)
             success = self.__confirm_docking()
             if not success:
                 continue
             if self.__get_empty_dock_num() == 0:
                 break
-            self.__click_docker()
+            self._click_docker()
 
         self.back_home_port()  
         return True
@@ -42,54 +43,58 @@ class DockingRunner(Common):
         return self.docker_num - len(self.safeFindAll("bucket.png"))
      
     @logged
-    def __click_docker(self):
-        self.clickWithResetMouse(Pattern("dock.png").targetOffset(-185,0))
+    def _click_docker(self):
+        self.clickWithRandomOffset(Pattern("dock.png").targetOffset(-185,0), x_offset_base=30, y_offset_base=10)
     
     @logged
     def __list_repairing_candidate(self, is_include_fight_fleet, is_include_no_fight_fleet):
         ships = []
         if is_include_fight_fleet:
-            ships += self.__get_in_fleets_ships()               
+            ships += self._get_in_fleets_ships()               
         if is_include_no_fight_fleet:
-            ships += self.__get_not_in_fleets_ships()
+            ships += self._get_not_in_fleets_ships()
         
         return ships
 
     @logged
-    def __get_in_fleets_ships(self):
+    def _get_in_fleets_ships(self):
         ships = []
         for mark_img in self.all_fleet_marks:
             for ship in self.safeFindAll(Pattern(mark_img).similar(0.85)):
                 if not ship.right().exists("in_repairing.png"):
-                    ships.append(ship)
+                    ships.append(ship.getCenter().offset(250, 0))
                     
         return ships
  
     @logged
-    def __get_not_in_fleets_ships(self):
-        base_location = find(Pattern("docking_titlebar.png").targetOffset(-40,0)).getTarget().below(20)
-        OFFSET_Y = 30
-        for i in xrange(0,self.docker_num):
-            target = Region(base_location.getX()-200, base_location.getY()+OFFSET_Y*i-10, 500, 40)
-            if not target.exists("in_repairing.png"):
-                return [target.getCenter()] 
-                
+    def _get_not_in_fleets_ships(self):
+        base_location = find("docking_titlebar.png").getTarget()
+        OFFSET_Y = 31
+        for i in xrange(1, 11):
+            location = base_location.offset(0, i*OFFSET_Y)
+            region = Region(location.getX()-200, location.getY()-20, 500, 40)
+            if not region.exists("in_repairing.png"):
+                return [region.getCenter()] 
+
+        return []
+ 
     @logged
     def __confirm_docking(self):
-        self.clickWithResetMouse("docking_start.png")
+        self.clickWithRandomLocationAndResetMouse("docking_start.png")
         if not exists("ok.png"):
-            self.__return_ship_list()
+            self._return_ship_list()
             return False
     
-        self.clickWithResetMouse("ok.png")
+        self.clickWithRandomLocationAndResetMouse("ok.png")
         waitVanish("ok.png")
         return True
     
     @logged
-    def __return_ship_list(self):
+    def _return_ship_list(self):
         find("base.png").right(50).click()
     
 if __name__ == "__main__":
-    runner = DockingRunner(2, [Fleet(1)], False)
+    runner = DockingRunner(2, [Fleet(1)], True)
     runner.run()
-    
+    #hover(runner._get_not_in_fleets_ships()[0])
+    #hover(runner._get_in_fleets_ships()[0])
