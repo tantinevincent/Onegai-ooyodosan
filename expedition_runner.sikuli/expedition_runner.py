@@ -5,12 +5,16 @@ from sikuli import *
 from config import Config
 
 class ExpeditionRunner(Common):
-    def __init__(self, fleets, expeditions):
+    def __init__(self, fleets, expeditions, message=None):
         self.fleets = fleets
         self.expeditions = expeditions
+        self.message = message
         
     @logged
     def run(self):
+        if self.message is not None and not self.message.is_need_check():
+            return True
+    
         self.clickWithRandomLocationAndResetMouse(Pattern("sortie.png").similar(0.60))
         self.clickWithRandomLocationAndResetMouse("expedition.png")
         waitVanish("expedition.png")
