@@ -42,21 +42,10 @@ class ResupplyRunner(Common):
     
     @logged
     def __resupply_fleet(self):
-        resupply_all_checkbox = find(Pattern("resupply_fleet_marks.png")).find("checkbox.png")
-        # Because sometime resupply all is not work, change to click each checkbox with ship
-        checkboxs = self.safeFindAll(Pattern("checkbox.png").similar(0.80), resupply_all_checkbox.below())
-        
-        if len(checkboxs) == 0:
-            return
-        
-        # sort checkbox list by axis y
-        for checkbox in sorted(checkboxs, key=lambda c: c.getTarget().getY()):
-            self.clickWithRandomOffset(checkbox.getTarget(), is_reset_mouse=False)
-        
-        self.clickWithRandomLocationAndResetMouse("resupply_everything.png")
+        self.clickWithRandomOffset("resupply_all.png")
         sleep(3)
     
 if __name__ == "__main__":
     #runner = ResupplyRunner([Fleet(1)], from_small_resuppy=False)
-    runner = ResupplyRunner([Fleet(2), Fleet(3), Fleet(4)], from_small_resuppy=False, enable_expedition_check=True)
+    runner = ResupplyRunner([Fleet(1), Fleet(2), Fleet(3), Fleet(4)], from_small_resuppy=False, enable_expedition_check=True)
     runner.run()
