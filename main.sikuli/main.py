@@ -14,6 +14,7 @@ from cron import Cron
 from dismantling_runner import DismantlingRunner
 from enable_runner import EnableRunner
 from while_runner import WhileRunner
+from message import Message
 
 import random
 
@@ -100,6 +101,8 @@ if __name__ == "__main__":
     config_path = sys.argv[0] + "/../../config.ini"        #Executing from console
     config = Config(config_path)
     
+    expedition_msg = Message()
+    
     return_fleet_checker = ReturnFleetChecker()
     
     # Level up first fleet
@@ -121,14 +124,14 @@ if __name__ == "__main__":
     resupply_runner = CompositeRunner()
     resupply_runner.add_runner(EnableRunner(config.expedition_enabled))
     resupply_runner.add_runner(return_fleet_checker)
-    resupply_runner.add_runner(ResupplyRunner(config.expedition_fleets, enable_expedition_check=True))
+    resupply_runner.add_runner(ResupplyRunner(config.expedition_fleets, enable_expedition_check=True, message=expedition_msg))
     
     # go exception
     expedition_runner = CompositeRunner()
     expedition_runner.add_runner(EnableRunner(config.expedition_enabled))
     expedition_runner.add_runner(resupply_runner)
     expedition_runner.add_runner(WhileRunner("return_fleet_message.png", resupply_runner))
-    expedition_runner.add_runner(ExpeditionRunner(config.expedition_fleets, config.expeditions))
+    expedition_runner.add_runner(ExpeditionRunner(config.expedition_fleets, config.expeditions, message=expedition_msg))
     
     # active quests
     questing_runner = CompositeRunner()

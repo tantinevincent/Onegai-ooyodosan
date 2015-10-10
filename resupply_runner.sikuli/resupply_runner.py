@@ -5,10 +5,11 @@ from config import Config
 from status import Status
 
 class ResupplyRunner(Common):
-    def __init__(self, fleets, from_small_resuppy=False, enable_expedition_check=False):
+    def __init__(self, fleets, from_small_resuppy=False, enable_expedition_check=False, message=None):
         self.fleets = fleets
         self.from_small_resuppy = from_small_resuppy 
         self.enable_expedition_check = enable_expedition_check
+        self.message = message
         
         if self.enable_expedition_check:
             self.expedition_img = Status(["on_expedition"]).get_images()[0]
@@ -20,11 +21,18 @@ class ResupplyRunner(Common):
         else:
             supply_btn = "supply_small.png"
         
+        if self.message is not None:
+            self.message.set_need_check(False)
+        
         self.clickWithRandomLocationAndResetMouse(supply_btn)
         for fleet in self.fleets:
             self.clickWithRandomOffset(fleet.getNotSelectedImage())
-            if self.__need_resupply():
-                self.__resupply_fleet()
+            if not self.__need_resupply():
+                continue
+            if self.message is not None:  # need record expedition check
+                self.message.set_need_check(True)
+            
+            self.__resupply_fleet() 
         
         self.back_home_port()  
         return True
