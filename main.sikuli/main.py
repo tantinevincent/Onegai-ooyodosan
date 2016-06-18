@@ -27,7 +27,7 @@ dismantling_runner = None
 
 def logged(f):
     def wrapped(*args, **kwargs):
-        print f.__name__ + " start"
+        print f.__class__.__name__ + " start"
         return f(*args, **kwargs)
     return wrapped 
 
@@ -98,7 +98,7 @@ def restartKancolle():
 
 if __name__ == "__main__":
     #config_path = sys.argv[0] + ".sikuli/../config.ini"   #Executing from sikuli IDE
-    config_path = sys.argv[0] + "/../../config.ini"        #Executing from console
+    config_path = sys.argv[0] + "/../config.ini"        #Executing from console
     config = Config(config_path)
     
     expedition_msg = Message()
