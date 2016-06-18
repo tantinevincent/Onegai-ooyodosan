@@ -13,27 +13,36 @@ class QuestRunner(Common):
         while exists("oyodo.png"):
             self.clickWithRandomLocationAndResetMouse("oyodo.png")
             sleep(1)
+
+        self.clickWithRandomLocationAndResetMouse("accepted_quest.png")
+        self.__recieve_all_rewards()
+
+	quest_categories = ["quest_category_daily.png",
+                            "quest_category_weekly.png"]
         
-        while True:
-            self.__check_quest_page()
-            if not exists("quest_next_page.png"):
-                break    
+	for category in quest_categories:
+            while True:
+                self.clickWithRandomLocationAndResetMouse(category)
+                self.__check_quest_page()
+                if not exists("quest_next_page.png"):
+                    break    
             
-            self.clickWithRandomOffset("quest_next_page.png", x_offset_base=3, y_offset_base=2)
+                self.clickWithRandomOffset("quest_next_page.png", 
+                                           x_offset_base=3, y_offset_base=2)
             
         self.back_home_port_from_quest()  
         return True
-     
+
     @logged
-    def __check_quest_page(self):
-        while exists("quest_success.png"):
-            self.__recieve_reward()
-        
+    def __recieve_all_rewards(self):
+        while exists("quest_success.png"):            
+            self.clickWithRandomLocationAndResetMouse("quest_success.png")
+            while exists("close.png"):
+                self.clickWithRandomLocationAndResetMouse("close.png")            
+    @logged
+    def __check_quest_page(self):       
         sleep(2) # wait update quest list
         for quests in self.quests_list:
-            if not exists(Pattern(quests.getTypeImage()).similar(0.85)):
-                continue
-        
             for quest_img in quests.getAllImages():
                 self._click_quest(Pattern(quest_img).similar(0.90))
     
@@ -48,14 +57,9 @@ class QuestRunner(Common):
         region = Region(match.x + match.w, match.y, 60, 60)
         self.clickWithRandomLocationAndResetMouse(region)
     
-    @logged
-    def __recieve_reward(self):
-        self.clickWithRandomLocationAndResetMouse("quest_success.png")
-        while exists("close.png"):
-            self.clickWithRandomLocationAndResetMouse("close.png")
 
 if __name__ == "__main__":
-    config_path = sys.argv[0] + "/../../config.ini"        #Executing from console
+    config_path = sys.argv[0] + "/../config.ini"        #Executing from console
     config = Config(config_path)
     runner = QuestRunner(config.quests_list)
     runner.run()
